@@ -48,7 +48,7 @@ export default function Profile() {
             <button 
               className="btn primary rounded-2"
               onClick={() => navigate("/edit-profile")}
-              >
+            >
                 Editar Perfil
             </button>
             <button 
@@ -97,8 +97,19 @@ export default function Profile() {
           </div>
 
           <div className="profile-btn-container">
-            <button className="btn primary">Editar Perfil</button>
-            <button className="btn secondary">Cambiar Contraseña</button>
+            <button 
+              className="btn primary rounded-2"
+              onClick={() => navigate("/edit-profile")}
+            >
+              Editar Perfil
+            </button>
+            <button 
+              className="btn secondary rounded-2"
+              onClick={() => navigate("/change-password")
+              }
+            >
+              Cambiar Contraseña
+            </button>
           </div>
 
           <h5 className="mb-2">📦 Últimas publicaciones</h5>
@@ -116,8 +127,8 @@ export default function Profile() {
           )}
 
           <div className="d-flex justify-content-between mt-3">
-            <Link to="/my-publications" className="btn primary light mr-3">Ver todas</Link>
-            <Link to="/create-publications" className="btn secondary">Crear publicación</Link>
+            <Link to="/my-publications" className="btn primary rounded-2 light mr-3">Ver todas</Link>
+            <Link to="/create-publications" className="btn secondary rounded-2">Crear publicación</Link>
           </div>
         </div>
       </div>

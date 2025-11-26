@@ -18,21 +18,21 @@ export default function MyPublications() {
   };
 
   return (
-    <div className="container mt-5 mb-5">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h3>📦 Mis publicaciones</h3>
+    <div className="container mt-5 mb-5" style={{ maxWidth: "1000px" }}>
+      <div className="publication-header">
+        <h3 className="text-secondary">📦 Mis publicaciones</h3>
         <button
-          className="btn secondary"
+          className="btn accent rounded-2"
           onClick={() => navigate("/create-publications")}
         >
-          ➕ Nueva publicación
+          + Nueva publicación
         </button>
       </div>
 
       {publications.length === 0 ? (
         <p>No tienes publicaciones activas 😿</p>
       ) : (
-        <div className="table-container">
+        <div className="table-responsive">
           <table className="table striped">
             <thead>
               <tr>
@@ -40,7 +40,7 @@ export default function MyPublications() {
                 <th>Nombre</th>
                 <th>Categoría</th>
                 <th>Precio</th>
-                <th>Acciones</th>
+                <th style={{ width: "240px" }}>Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -57,23 +57,37 @@ export default function MyPublications() {
                   <td>{product.category}</td>
                   <td>${product.price.toFixed(2)}</td>
                   <td>
-                    <button
-                      className="btn small blue me-2"
-                      onClick={() => toast.info("Función de edición en desarrollo")}
-                    >
-                      ✏️ Editar
-                    </button>
-                    <button
-                      className="btn small red"
-                      onClick={() => handleDelete(product.id)}
-                    >
-                      🗑️ Eliminar
-                    </button>
+                    <div className="publications-table">
+                      <button
+                        className="btn small primary rounded-2 mr-1"
+                        onClick={() => navigate(`/view-publication/${product.id}`)}
+                      >
+                        Ver
+                      </button>
+                      <button
+                        className="btn small secondary rounded-2 mr-1"
+                        onClick={() => navigate(`/edit-publication/${product.id}`)}
+                      >
+                        Editar
+                      </button>
+                      <button
+                        className="btn small red rounded-2"
+                        onClick={() => handleDelete(product.id)}
+                      >
+                        Eliminar
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          <button
+            className="btn primary rounded-2 me-3 mt-2"
+            onClick={() => navigate("/profile")}
+          >
+            ⬅ Volver al Perfil
+          </button>
         </div>
       )}
     </div>

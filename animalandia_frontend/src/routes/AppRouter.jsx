@@ -20,6 +20,8 @@ import CreatePublication from "../pages/private/CreatePublication.jsx";
 import EditProfile from "../pages/private/EditProfile.jsx";
 import ChangePassword from "../pages/private/ChangePassword.jsx";
 import OrderDetail from "../pages/private/OrderDetail.jsx";
+import ViewPublication from "../pages/private/ViewPublication.jsx";
+import EditPublication from "../pages/private/EditPublication.jsx";
 // Administración
 import Dashboard from "../pages/admin/Dashboard.jsx";
 import ManageOrders from "../pages/admin/ManageOrders.jsx";
@@ -54,6 +56,8 @@ export default function AppRouter() {
             {/* Vendedor */}
             <Route path="/my-publications" element={<ProtectedRoute role="seller"><MyPublications/></ProtectedRoute>}/>
             <Route path="/create-publications" element={<ProtectedRoute role="seller"><CreatePublication/></ProtectedRoute>}/>
+            <Route path="/view-publication/:id" element={<ProtectedRoute role="seller"><ViewPublication/></ProtectedRoute>}/>
+            <Route path="/edit-publication/:id" element={<ProtectedRoute role="seller"><EditPublication/></ProtectedRoute>}/>
 
             {/* Administracion */}
             <Route path="/dashboard" element={<ProtectedRoute role="Admin"><Dashboard/></ProtectedRoute>}/>

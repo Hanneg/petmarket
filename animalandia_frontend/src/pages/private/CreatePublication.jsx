@@ -33,7 +33,7 @@ export default function CreatePublication() {
   };
 
   return (
-    <div className="container mt-5 mb-5">
+    <div className="container mt-5 mb-5 text-secondary">
       <h3 className="text-center mb-4">🛍️ Crear nueva publicación</h3>
 
       <form
@@ -71,6 +71,7 @@ export default function CreatePublication() {
             <option value="Gatos">Gatos</option>
             <option value="Accesorios">Accesorios</option>
             <option value="Comida">Comida</option>
+            <option value="Comida">Salud e Higiene</option>
           </select>
           <p className="text-danger">{errors.category?.message}</p>
         </div>
@@ -80,9 +81,17 @@ export default function CreatePublication() {
           <input type="file" {...register("image")} className="form-control" />
           <p className="text-danger">{errors.image?.message}</p>
         </div>
-
-        <button type="submit" className="btn secondary full-width">
+        <button 
+          type="submit" 
+          className="btn primary full-width rounded-2 mb-2"
+        >
           Guardar publicación
+        </button>
+        <button
+          className="btn secondary full-width rounded-2"
+          onClick={() => navigate("/my-publications")}
+        >
+          Cancelar
         </button>
       </form>
     </div>

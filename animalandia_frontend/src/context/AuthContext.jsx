@@ -8,7 +8,7 @@ export function AuthProvider({ children }) {
 
     // Leer usuario guardado
     useEffect(() => {
-        const storedUser = localStorage.getItem("petmaket_user");
+        const storedUser = localStorage.getItem("petmarket_user");
         if (storedUser) setUser(JSON.parse(storedUser));
     }, []);
 
