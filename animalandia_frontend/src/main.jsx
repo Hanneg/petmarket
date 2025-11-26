@@ -1,17 +1,15 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "axentix/dist/axentix.min.css";
+import "axentix/dist/axentix.min.js";
+import './index.css';
 import App from './App.jsx'
 
-// Importa Axentix
-import 'axentix/dist/axentix.min.js';
-import Axentix from "axentix";
+// Axentix está disponible globalmente en window
+window.Axentix?.init && window.Axentix.init();
 
-// Inicializa Axentix si quieres usar componentes JS
-Axentix.init();
-
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
     <App />
-  </StrictMode>,
+  </React.StrictMode>,
 )
