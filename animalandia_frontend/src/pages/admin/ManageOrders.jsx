@@ -24,8 +24,9 @@ export default function ManageOrders() {
               <td>${order.total.toFixed(2)}</td>
               <td>{order.status}</td>
               <td>
-                <button className="btn small blue me-2">Actualizar</button>
-                <button className="btn small red">Eliminar</button>
+                <button className="btn small primary me-2 rounded-2">Ver</button>
+                <button className="btn small secondary me-2 rounded-2">Actualizar</button>
+                <button className="btn small red rounded-2">Eliminar</button>
               </td>
             </tr>
           ))}

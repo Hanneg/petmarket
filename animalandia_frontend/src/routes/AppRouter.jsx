@@ -24,6 +24,7 @@ import ViewPublication from "../pages/private/ViewPublication.jsx";
 import EditPublication from "../pages/private/EditPublication.jsx";
 // Administración
 import Dashboard from "../pages/admin/Dashboard.jsx";
+import DashboardHome from "../pages/admin/DashboardHome.jsx";
 import ManageOrders from "../pages/admin/ManageOrders.jsx";
 import ManageProducts from "../pages/admin/ManageProducts.jsx";
 import ManageUsers from "..//pages/admin/ManageUsers.jsx";
@@ -60,10 +61,12 @@ export default function AppRouter() {
             <Route path="/edit-publication/:id" element={<ProtectedRoute role="seller"><EditPublication/></ProtectedRoute>}/>
 
             {/* Administracion */}
-            <Route path="/dashboard" element={<ProtectedRoute role="Admin"><Dashboard/></ProtectedRoute>}/>
-            <Route path="/manage-orders" element={<ProtectedRoute role="Admin"><ManageOrders/></ProtectedRoute>}/>
-            <Route path="/manage-products" element={<ProtectedRoute role="Admin"><ManageProducts/></ProtectedRoute>}/>
-            <Route path="/manage-users" element={<ProtectedRoute role="Admin"><ManageUsers/></ProtectedRoute>}/>
+            <Route path="/admin" element={<ProtectedRoute role="Admin"><Dashboard/></ProtectedRoute>}>
+                <Route index element={<DashboardHome/>} />
+                <Route path="users" element={<ManageUsers/>}/>
+                <Route path="products" element={<ManageProducts/>}/>
+                <Route path="orders" element={<ManageOrders/>}/>
+            </Route>
 
             {/* Error */}
             <Route path="*" element={<NotFound />} />

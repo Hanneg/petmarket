@@ -29,8 +29,9 @@ export default function ManageUsers() {
               <td>{user.email}</td>
               <td>{user.role}</td>
               <td>
-                <button className="btn small blue me-2">Editar</button>
-                <button className="btn small red">Eliminar</button>
+                <button className="btn small primary me-2 rounded-2">Ver</button>
+                <button className="btn small secondary me-2 rounded-2">Editar</button>
+                <button className="btn small red rounded-2">Eliminar</button>
               </td>
             </tr>
           ))}

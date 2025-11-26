@@ -98,7 +98,7 @@ export default function Navbar() {
                                     {/* Administrador */}
                                     {user.role === "Admin" && (
                                         <>
-                                            <li><Link to="/dashboard" onClick={() => setDropdownOpen(false)}>Panel administrativo</Link></li>
+                                            <li><Link to="/admin" onClick={() => setDropdownOpen(false)}>Panel administrativo</Link></li>
                                         </>
                                     )}
 
