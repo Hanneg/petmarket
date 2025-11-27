@@ -2,12 +2,12 @@ import React from "react";
 
 export default function Footer() {
     return (
-        <footer className="footer accent text-secondary p-4 mt-5">
+        <footer className="footer accent text-secondary">
             <div className="container">
                 <div className="grix xs1 sm2 md2 between vcenter">
                     {/* Columna izquierda */}
                     <div className="col">
-                        <p className="m-o font-w800">
+                        <p className="m-0 font-w800">
                             © 2025 AnimaLandia - Todos los derechos reservados
                         </p>
                     </div>

@@ -491,12 +491,6 @@ html, body {
   align-items: center;
 }
 
-.publications-table {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .publication-container {
   display: flex;
   justify-content: space-between;
@@ -525,10 +519,11 @@ html, body {
 /* =================== */
 .admin-dashboard {
   display: flex;
-  min-height: calc(100vh - 140px); 
-  /* AJUSTA si tu navbar y footer tienen diferente altura */
+  flex: 1;
+  height: calc(100vh - 70px);
   background: #f5f6fa;
-  margin-top: 0;
+  margin: 0;     /* Quita espacio extra */
+  padding: 0;
 }
 
 .admin-sidebar {
@@ -536,8 +531,7 @@ html, body {
   background: #212529;
   color: white;
   padding: 20px;
-  height: auto;
-  min-height: 100%;
+  height: 100%;       /* Esto lo hace ocupar toda la columna */
 }
 
 .sidebar-header h5 {
@@ -573,9 +567,10 @@ html, body {
 /* MANEJO DE PRODUCTOS */
 /* =================== */
 .admin-content {
-  margin-left: 250px; /* Mismo ancho que el sidebar */
-  padding: 25px;
-  width: calc(100% - 250px);
+  flex: 1;
+  padding: 0;
+  margin: 0;
+  width: 100%;      
 }
 
 .modal-overlay {
@@ -598,6 +593,50 @@ html, body {
   width: 420px;
   max-width: 90%;
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.manage-users-wrapper {
+  height: 100%;
+  overflow-y: auto;
+  padding: 15px;
+}
+
+.table-wrapper {
+  max-height: 60vh;   
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+}
+
+.manage-products-wrapper {
+  height: 100%;
+  overflow-y: auto;
+  padding: 15px;
+}
+
+.products-table-wrapper {
+  max-height: 65vh;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.manage-orders-wrapper {
+  height: 100%;
+  overflow-y: auto;
+  padding: 15px;
+}
+
+.orders-table-wrapper {
+  max-height: 65vh;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
 }
 
 /* =================== */

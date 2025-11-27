@@ -15,12 +15,12 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <BrowserRouter>
-          <div className="app-wrapper d-flex flex-column min-vh-100">
+          <div className="app-wrapper">
             {/* Navbar */}
             <Navbar/>
 
             {/* Rutas */}
-            <main className="main-content container flex-grow-1 mt-4 mb-4">
+            <main className="main-content flex-grow-1 p-0">
               <AppRouter/>
             </main>
 
