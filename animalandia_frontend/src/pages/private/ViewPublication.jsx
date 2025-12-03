@@ -15,46 +15,55 @@ export default function ViewPublication() {
   if (!product) return <p className="text-center mt-5">Cargando...</p>;
 
   return (
-    <div className="container mt-5" style={{ maxWidth: "900px" }}>
+    <div className="container mt-5 mb-4" style={{ maxWidth: "900px" }}>
+      
       <h3 className="text-secondary mb-4 text-center">Ver publicación</h3>
-      <div className="card shadow-sm p-4">
+
+      <div className="viewpub-card shadow-1 p-4">
         
-        <div className="publication-container">
-          <div className="publication-image card shadow-2 rounded-2" >
-            {/* Imagen del producto */}
+        <div className="viewpub-grid">
+          
+          {/* Imagen */}
+          <div className="viewpub-image-wrapper">
             <img
-                src={product.image}
-                alt={product.name}
-                className="publication-image-img"
+              src={product.image}
+              alt={product.name}
+              className="viewpub-image"
             />
           </div>
 
-          {/* Información del producto */}
-          <div className="publication-info text-secondary">
-            <h2 className="fw-bold">{product.name}</h2>
+          {/* Información */}
+          <div className="viewpub-info">
+            <h2 className="fw-bold text-secondary">{product.name}</h2>
             <p className="text-accent font-w600">{product.category}</p>
-            <h4 className="mt-3 mb-3">${product.price}</h4>
 
-            <p className="mt-3">{product.description || "Sin descripción"}</p>
+            <h3 className="price mt-3 mb-3">${product.price}</h3>
 
-            <div className="d-flex flex-column flex-sm-row mt-4 gap-2">
+            <p className="description">
+              {product.description || "Sin descripción disponible."}
+            </p>
+
+            <div className="viewpub-actions">
               <button
-                className="btn primary rounded-2 mr-2"
+                className="btn primary rounded-2"
                 onClick={() => navigate(`/edit-publication/${product.id}`)}
               >
                 Editar publicación
               </button>
 
               <button
-                className="btn secondary flex-grow-1 rounded-2"
+                className="btn secondary rounded-2"
                 onClick={() => navigate("/my-publications")}
               >
                 Volver a mis publicaciones
               </button>
             </div>
           </div>
+
         </div>
+
       </div>
+      
     </div>
   );
 }

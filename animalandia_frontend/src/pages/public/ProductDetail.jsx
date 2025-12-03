@@ -95,7 +95,7 @@ export default function ProductDetail() {
         </div>
 
         {/* Imagen del producto (derecha) */}
-        <div className="product-image card shadow-2 rounded-3">
+        <div className="product-image card shadow-2 rounded-3 mb-4">
           <img
             src={product.image}
             alt={product.name}

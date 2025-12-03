@@ -137,7 +137,7 @@ export default function Home() {
           </button>
         </div>
 
-        <div className="text-center text-background justify-content-center align-items-center mb-3">    
+        <div className="text-center text-background justify-content-center align-items-center mb-4">    
           <button
             className="btn small secondary rounded-2"
             onClick={() => navigate("/catalog")}

@@ -408,6 +408,74 @@ html, body {
     margin-bottom: 20px;
 }
 
+/* ========================== */
+/* NAVBAR RESPONSIVE */
+/* ========================== */
+
+.hamburger-btn {
+  font-size: 1.8rem;
+  background: transparent;
+  color: white;
+  border: none;
+  margin-right: 15px;
+  cursor: pointer;
+  display: none;
+}
+
+/* Ocultar en escritorio */
+.hide-mobile { display: flex; }
+.hide-desktop { display: none; }
+
+/* Menú móvil */
+.mobile-menu {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  width: 100%;
+  background: var(--background);
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  z-index: 20;
+}
+
+.mobile-menu a,
+.mobile-menu button {
+  padding: 12px 15px;
+  color: var(--secondary);
+  text-align: left;
+  font-size: 1.1rem;
+  border: none;
+  background: none;
+}
+
+.mobile-menu a:hover,
+.mobile-menu button:hover {
+  background: var(--hover);
+}
+
+/* Badge carrito */
+.cart-badge {
+  background-color: white;
+  color: var(--secondary);
+  padding: 2px 7px;
+  border-radius: 50%;
+  font-weight: bold;
+  margin-left: 5px;
+  font-size: 0.8rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hide-mobile { display: none !important; }
+  .hide-desktop { display: block !important; }
+
+  .navbar {
+    justify-content: space-between;
+    padding-right: 10px;
+  }
+}
+
 /* ================ */
 /* DASHBOARD LAYOUT */
 /* ================ */
@@ -512,6 +580,95 @@ html, body {
 
 .publication-info {
   flex: 1; 
+}
+
+/* ============================== */
+/* MIS PUBLICACIONES - RESPONSIVE */
+/* ============================== */
+
+/* Ocultar en desktop */
+.hide-desktop {
+  display: none;
+}
+
+/* CARD MOBILE VERSION */
+.publication-card {
+  background: white;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  gap: 15px;
+}
+
+.publication-card-img {
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.publication-card-body {
+  flex: 1;
+}
+
+.publication-card-body h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--secondary);
+}
+
+.publication-card-body .category {
+  font-size: 0.9rem;
+  opacity: 0.7;
+  margin: 5px 0;
+}
+
+.publication-card-body .price {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+/* Botones */
+.publication-card-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+
+  /* Tabla solo en desktop */
+  .hide-mobile {
+    display: none !important;
+  }
+
+  .hide-desktop {
+    display: block !important;
+  }
+
+  /* Card mejora */
+  .publication-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .publication-card-img {
+    width: 90%;
+    height: 160px;
+  }
+
+  .publication-card-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .publication-card-actions .btn {
+    width: 100%;
+  }
 }
 
 /* =================== */
@@ -637,6 +794,140 @@ html, body {
   border: 1px solid #ddd;
   border-radius: 6px;
   padding: 10px;
+}
+
+/* ========================== */
+/* FOOTER RESPONSIVE */
+/* ========================== */
+
+.footer {
+    padding: 20px 0;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 0 15px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.footer-left p {
+    margin: 0;
+}
+
+.footer-right {
+    display: flex;
+    gap: 20px;
+}
+
+.footer-right a {
+    color: var(--background);
+    text-decoration: none;
+}
+
+.footer-right a:hover {
+    opacity: 0.9;
+}
+
+/* -------------- */
+/* MÓVIL / TABLET */
+/* -------------- */
+@media (max-width: 768px) {
+    .footer-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    .footer-right {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .footer-right a {
+        font-size: 1.1rem;
+    }
+}
+
+/* =========================== */
+/* VIEW PUBLICATION RESPONSIVE */
+/* =========================== */
+
+.viewpub-card {
+    background: white;
+    border-radius: 12px;
+}
+
+/* Grid principal */
+.viewpub-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+/* Imagen */
+.viewpub-image-wrapper {
+    width: 100%;
+    height: 350px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #f5f5f5;
+}
+
+.viewpub-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Información */
+.viewpub-info .price {
+    color: var(--secondary);
+    font-weight: bold;
+}
+
+.viewpub-info .description {
+    margin-top: 10px;
+    font-size: 1rem;
+}
+
+/* Botones */
+.viewpub-actions {
+    margin-top: 25px;
+    display: flex;
+    gap: 12px;
+}
+
+/* ========================== */
+/* RESPONSIVE */
+/* ========================== */
+@media (max-width: 768px) {
+
+    .viewpub-grid {
+        grid-template-columns: 1fr; /* 👉 Se vuelve una sola columna */
+    }
+
+    .viewpub-image-wrapper {
+        height: 260px; /* más compacto */
+    }
+
+    .viewpub-info {
+        text-align: center;
+    }
+
+    /* Botones apilados */
+    .viewpub-actions {
+        flex-direction: column;
+    }
+
+    .viewpub-actions .btn {
+        width: 100%;
+    }
 }
 
 /* =================== */
