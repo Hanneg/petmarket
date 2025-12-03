@@ -84,7 +84,7 @@ export default function Catalog() {
       </div>
 
       {/* Grid de productos */}
-      <div className="grix xs1 sm2 md3 lg4 mt-4">
+      <div className="grix xs1 sm2 md3 lg4 mt-4 mb-4">
         {filteredProducts.length > 0 ? (
           filteredProducts.map((product) => (
             <div key={product.id} className="card p-2 shadow-1 mr-2">

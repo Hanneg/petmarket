@@ -41,11 +41,11 @@ export default function ManageOrders() {
           <tbody>
             {orders.map((order) => (
               <tr key={order.id}>
-                <td>#{order.id}</td>
-                <td>{order.date}</td>
-                <td>${order.total.toFixed(2)}</td>
-                <td>{order.status}</td>
-                <td>
+                <td data-label="ID">#{order.id}</td>
+                <td data-label="Fecha">{order.date}</td>
+                <td data-label="Total">${order.total.toFixed(2)}</td>
+                <td data-label="Estado">{order.status}</td>
+                <td data-label="Acciones">
                   <button
                     className="btn small primary me-2 rounded-2 mr-1"
                     onClick={() => setViewOrder(order)}

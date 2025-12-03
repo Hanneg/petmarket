@@ -58,7 +58,7 @@ export default function ManageProducts() {
           <tbody>
             {products.map((p) => (
               <tr key={p.id}>
-                <td>{p.id}</td>
+                <td data-label="ID">{p.id}</td>
                 <td>
                   <img
                     src={p.image}
@@ -66,11 +66,11 @@ export default function ManageProducts() {
                     style={{ width: 55, borderRadius: 6 }}
                   />
                 </td>
-                <td>{p.name}</td>
-                <td>{p.category}</td>
-                <td>${p.price.toFixed(2)}</td>
+                <td data-label="Nombre">{p.name}</td>
+                <td data-label="Categoría">{p.category}</td>
+                <td data-label="Precio">${p.price.toFixed(2)}</td>
 
-                <td>
+                <td data-label="Acciones">
                   <button
                     className="btn primary btn-sm me-2 mr-1 rounded-2"
                     onClick={() => setViewProduct(p)}

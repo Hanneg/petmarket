@@ -47,11 +47,11 @@ export default function ManageUsers() {
           <tbody>
             {users.map((user) => (
               <tr key={user.id}>
-                <td>{user.id}</td>
-                <td>{user.name}</td>
-                <td>{user.email}</td>
-                <td>{user.role}</td>
-                <td>
+                <td data-label="ID">{user.id}</td>
+                <td data-label="Nombre">{user.name}</td>
+                <td data-label="Email">{user.email}</td>
+                <td data-label="Rol">{user.role}</td>
+                <td data-label="Acciones">
                   <button 
                     className="btn primary btn-sm me-2 mr-1 rounded-2"
                     onClick={() => openModal(user, "view")}

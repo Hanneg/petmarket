@@ -16,6 +16,7 @@
 /* =================== */
 /* ESTRUCTURA GLOBAL   */
 /* =================== */
+
 html, body {
   background-color: var(--background);
   color: #333;
@@ -37,6 +38,7 @@ html, body {
 /* =================== */
 /* COLORES DE FONDO    */
 /* =================== */
+
 .primary { background-color: var(--primary) !important; color: #fff; }
 .secondary { background-color: var(--secondary) !important; color: #fff; }
 .background { background-color: var(--background) !important; }
@@ -46,6 +48,7 @@ html, body {
 /* =================== */
 /* COLORES DE TEXTO    */
 /* =================== */
+
 .text-primary { color: var(--text-primary) !important; }
 .text-secondary { color: var(--text-secondary) !important; }
 .text-background { color: var(--text-background) !important; }
@@ -55,6 +58,7 @@ html, body {
 /* =================== */
 /* BANNER PRINCIPAL    */
 /* =================== */
+
 .banner {
   position: relative;
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
@@ -77,6 +81,7 @@ html, body {
 /* =================== */
 /* BOTONES             */
 /* =================== */
+
 .btn.primary,
 .btn.secondary,
 .btn.accent {
@@ -106,6 +111,7 @@ html, body {
 /* =================== */
 /* CATEGORÍAS          */
 /* =================== */
+
 .category-card {
   display: flex;
   flex-direction: column;
@@ -113,11 +119,6 @@ html, body {
   overflow: hidden;
   transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   height: 100%;
-}
-
-.category-card .category-text {
-  padding: 0.5rem 1rem;
-  text-align: center;
 }
 
 .category-card:hover {
@@ -128,7 +129,7 @@ html, body {
 .category-img-wrapper {
   flex: 1;
   width: 100%;
-  height: 100%; /* 👈 altura fija y consistente */
+  height: 100%;
   overflow: hidden;
   border-radius: 10px 10px 0 0;
 }
@@ -140,28 +141,19 @@ html, body {
   display: block;
 }
 
-.category-card.large .category-img-wrapper {
-  height: 380px;
-}
-
-/* =================== */
-/* GRID DE CATEGORÍAS  */
-/* =================== */
-.categories-grid {
+.category-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   align-items: stretch;
 }
 
-/* Columnas izquierda y derecha con dos imágenes apiladas */
 .category-col {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-/* Columna central con imagen grande centrada verticalmente */
 .category-col.middle {
   display: flex;
   flex-direction: column;
@@ -172,18 +164,19 @@ html, body {
   flex: 1;
 }
 
-/* Ajustes visuales para mantener proporciones equilibradas */
-.category-card .category-img-wrapper {
-  height: 180px;
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%; 
+  min-height: 380px;
 }
 
-.category-card.large .category-img-wrapper {
-  height: 380px;
+.card-content {
+  flex-grow: 1;
 }
 
-/* Responsivo: en pantallas pequeñas se apilan */
 @media (max-width: 768px) {
-  .categories-grid {
+  .category-grid {
     grid-template-columns: 1fr;
   }
 
@@ -192,9 +185,10 @@ html, body {
   }
 }
 
-/* =================== */
+/* ==================== */
 /* PRODUCTOS DESTACADOS */
-/* =================== */
+/* ==================== */
+
 .products-carousel {
   display: flex;
   overflow-x: auto;
@@ -212,7 +206,6 @@ html, body {
   border-radius: 3px;
 }
 
-/* Botones de desplazamiento */
 .scroll-btn {
   position: absolute;
   top: 50%;
@@ -228,7 +221,6 @@ html, body {
   transition: background-color 0.2s ease;
 }
 
-/* Distinción entre los dos botones */
 .scroll-btn.left-0 {
   left: -15px; 
 }
@@ -242,8 +234,9 @@ html, body {
 }
 
 /* =================== */
-/* About Us            */
+/* ABOUT US            */
 /* =================== */
+
 .about-section {
   margin-top: 4rem;
   margin-bottom: 4rem;
@@ -260,7 +253,6 @@ html, body {
   align-items: stretch;
 }
 
-/* Contenedor de imagen */
 .product-image {
   height: 100%;
   overflow: hidden;
@@ -273,12 +265,10 @@ html, body {
   object-fit: cover;
 }
 
-/* Asegurar que info y la imagen ocupen todo el alto */
 .product-info {
   height: 100%;
 }
 
-/* Input de cantidad */
 .quantity-input {
   width: 80px;
   padding: 6px 10px;
@@ -339,7 +329,7 @@ html, body {
 }
 
 /* =================== */
-/* DROPDOWN DEL NAVBAR */
+/* NAVBAR              */
 /* =================== */
 
 .dropdown {
@@ -409,7 +399,7 @@ html, body {
 }
 
 /* ========================== */
-/* NAVBAR RESPONSIVE */
+/* NAVBAR RESPONSIVE          */
 /* ========================== */
 
 .hamburger-btn {
@@ -476,80 +466,6 @@ html, body {
   }
 }
 
-/* ================ */
-/* DASHBOARD LAYOUT */
-/* ================ */
-.dashboard-container {
-  display: flex;
-  width: 100%;
-  min-height: calc(100vh - 70px);
-  margin-top: 20px;
-}
-
-/* ======= */
-/* SIDEBAR */
-/* ======= */
-.dashboard-sidebar {
-  width: 260px;
-  background: #2c3e50;
-  color: white;
-  padding: 20px;
-  transition: all 0.3s ease;
-}
-
-.dashboard-sidebar.closed {
-  width: 70px;
-}
-
-.sidebar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.sidebar-header h5 {
-  margin: 0;
-  white-space: nowrap;
-}
-
-.toggle-btn {
-  background: rgba(255,255,255,0.2);
-  border-radius: 5px;
-  font-size: 14px;
-  padding: 4px 6px;
-}
-
-/* MENU */
-.sidebar-menu {
-  list-style: none;
-  padding: 0;
-  margin-top: 20px;
-}
-
-.sidebar-menu li {
-  margin-bottom: 12px;
-}
-
-.sidebar-link {
-  display: block;
-  padding: 10px 12px;
-  color: white;
-  border-radius: 8px;
-  transition: 0.2s;
-  white-space: nowrap;
-}
-
-.sidebar-link:hover {
-  background: rgba(255,255,255,0.15);
-  padding-left: 16px;
-}
-
-/* MAIN CONTENT */
-.dashboard-content {
-  flex: 1;
-  padding: 20px;
-}
-
 /* =================== */
 /* MIS PUBLICACIONES   */
 /* =================== */
@@ -566,7 +482,6 @@ html, body {
   align-items: stretch;
 }
 
-/* Imagen */
 .publication-image {
   overflow: hidden;
   display: flex;
@@ -586,12 +501,10 @@ html, body {
 /* MIS PUBLICACIONES - RESPONSIVE */
 /* ============================== */
 
-/* Ocultar en desktop */
 .hide-desktop {
   display: none;
 }
 
-/* CARD MOBILE VERSION */
 .publication-card {
   background: white;
   padding: 15px;
@@ -630,14 +543,12 @@ html, body {
   font-weight: bold;
 }
 
-/* Botones */
 .publication-card-actions {
   display: flex;
   gap: 10px;
   margin-top: 10px;
 }
 
-/* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
 
   /* Tabla solo en desktop */
@@ -679,7 +590,7 @@ html, body {
   flex: 1;
   height: calc(100vh - 70px);
   background: #f5f6fa;
-  margin: 0;     /* Quita espacio extra */
+  margin: 0;
   padding: 0;
 }
 
@@ -688,10 +599,17 @@ html, body {
   background: #212529;
   color: white;
   padding: 20px;
-  height: 100%;       /* Esto lo hace ocupar toda la columna */
+  height: 100%;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .sidebar-header h5 {
+  white-space: nowrap;
   margin: 0 0 20px 0;
   font-size: 20px;
   text-align: left;
@@ -700,10 +618,11 @@ html, body {
 .sidebar-menu {
   list-style: none;
   padding: 0;
+  margin-top: 20px;
 }
 
 .sidebar-menu li {
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 }
 
 .sidebar-link {
@@ -718,11 +637,50 @@ html, body {
 
 .sidebar-link:hover {
   background: #343a40;
+  padding-left: 16px;
 }
 
-/* =================== */
-/* MANEJO DE PRODUCTOS */
-/* =================== */
+.sidebar-toggle {
+  display: none;
+  font-size: 26px;
+  background: #212529;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  width: 100%;
+  text-align: left;
+}
+
+@media (max-width: 992px) {
+  .admin-dashboard {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .sidebar-toggle {
+    display: block;
+  }
+
+  .admin-sidebar {
+    width: 100%;
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.3s ease;
+    padding: 0;
+  }
+
+  .admin-sidebar.open {
+    height: auto;
+    opacity: 1;
+    padding: 15px 20px;
+  }
+}
+
+/* ============== */
+/* ADMINISTRACIÓN */
+/* ============== */
+
 .admin-content {
   flex: 1;
   padding: 0;
@@ -796,9 +754,81 @@ html, body {
   padding: 10px;
 }
 
-/* ========================== */
+/* ======== RESPONSIVE PARA MANAGE USERS ======== */
+
+/* --- En móvil, convertir tabla en tarjetas verticales --- */
+@media (max-width: 768px) {
+  
+  /* Quitar tabla tradicional */
+  table.table {
+    display: block;
+    width: 100%;
+  }
+
+  table.table thead {
+    display: none; /* oculta encabezados */
+  }
+
+  table.table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  table.table tbody tr {
+    display: block;
+    background: white;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+  }
+
+  table.table tbody td {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 4px;
+    font-size: 15px;
+    border: none;
+  }
+
+  /* Etiquetas automáticas */
+  table.table tbody td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    margin-right: 10px;
+  }
+
+  /* Contenedor de botones más limpio */
+  table.table td:last-child {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  table.table td:last-child button {
+    width: 100%;
+  }
+
+  /* Wrapper ajustado para móvil */
+  .manage-users-wrapper {
+    padding: 10px;
+  }
+
+  .table-wrapper {
+    max-height: none;
+    overflow: visible;
+  }
+
+  /* Modal adaptado a móvil */
+  .modal-box {
+    width: 95%;
+    max-width: 95%;
+    padding: 18px;
+  }
+}
+
+/* ================= */
 /* FOOTER RESPONSIVE */
-/* ========================== */
+/* ================= */
 
 .footer {
     padding: 20px 0;
@@ -904,7 +934,7 @@ html, body {
 }
 
 /* ========================== */
-/* RESPONSIVE */
+/* RESPONSIVE                 */
 /* ========================== */
 @media (max-width: 768px) {
 

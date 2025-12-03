@@ -68,7 +68,7 @@ export default function Home() {
       {/* Categorías destacadas */}
       <section className="container mt-6 mb-6">
         <h3 className="text-center mb-4 text-secondary">Categorías destacadas</h3>
-        <div className="categories-grid">
+        <div className="category-grid">
           {/* Columna izquierda */}
           <div className="category-col">
             <CategoryCard
