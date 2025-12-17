@@ -9,7 +9,7 @@ const schema = yup.object().shape({
     email: yup.string().email("Correo inválido").required("Campo obligatorio"),
     password: yup.string().min(6, "Mínimo 6 caracteres").required("Campo obligatorio"), 
     confirmPassword: yup.string().oneOf([yup.ref("password")], "Las contraseñas no coinciden").required("Campo requerido"),
-    role: yup.string().oneOf(["cliente", "seller"], "Selecciona un rol válido").required("Campo requerido"),
+    role: yup.string().oneOf(["client", "seller"], "Selecciona un rol válido").required("Campo requerido"),
 });
 
 export default function Register() {
@@ -20,19 +20,31 @@ export default function Register() {
         formState: { errors },
     } = useForm({ resolver: yupResolver(schema)})
 
-    const onSubmit = (data) => {
-        const newUser = {
-            id: Date.now(),
-            name: data.name,
-            email: data.email,
-            password: data.password,
-            role: data.role
-        };
+    const onSubmit = async (data) => {
+        try {
+            const response = await fetch("http://localhost:3000/api/auth/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify ({
+                    name: data.name,
+                    email: data.email,
+                    password: data.password,
+                    role: data.role // client o seller
+                })
+            });
 
-        // Guardar temporalmente en localStorage - Simulación
-        localStorage.setItem("petmaker_registered_user", JSON.stringify(newUser))
-        toast.success("Registro exitoso, ya puedes iniciar sesión con tus credenciales")
-        navigate("/login")
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Error en el registro");
+            }
+
+            toast.success("Registro exitoso, ya puedes iniciar sesión");
+            navigate("/login");
+        } catch (error) {
+            toast.error(error.message);
+        }
     };
 
     return (
@@ -69,7 +81,7 @@ export default function Register() {
                         <label>Tipo de usuario</label>
                         <select {...register("role")} className="form-control">
                             <option value="">--Selecciona una opción--</option>
-                            <option value="cliente">Cliente</option>
+                            <option value="client">Cliente</option>
                             <option value="seller">Vendedor</option>
                         </select>
                         <p className="text-danger">{errors.role?.message}</p>

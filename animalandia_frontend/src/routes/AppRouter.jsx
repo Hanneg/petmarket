@@ -61,7 +61,7 @@ export default function AppRouter() {
             <Route path="/edit-publication/:id" element={<ProtectedRoute role="seller"><EditPublication/></ProtectedRoute>}/>
 
             {/* Administracion */}
-            <Route path="/admin" element={<ProtectedRoute role="Admin"><Dashboard/></ProtectedRoute>}>
+            <Route path="/admin" element={<ProtectedRoute role="admin"><Dashboard/></ProtectedRoute>}>
                 <Route index element={<DashboardHome/>} />
                 <Route path="users" element={<ManageUsers/>}/>
                 <Route path="products" element={<ManageProducts/>}/>

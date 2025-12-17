@@ -92,7 +92,7 @@ export default function Navbar() {
                                     </>
                                 )}
 
-                                {user.role === "Admin" && (
+                                {user.role === "admin" && (
                                     <li><Link to="/admin">Panel administrativo</Link></li>
                                 )}
 
@@ -134,7 +134,7 @@ export default function Navbar() {
                                 </>
                             )}
 
-                            {user.role === "Admin" && (
+                            {user.role === "admin" && (
                                 <Link to="/admin">Panel Administrativo</Link>
                             )}
 
