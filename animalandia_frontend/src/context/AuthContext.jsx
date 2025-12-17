@@ -7,17 +7,16 @@ const API_URL = "http://localhost:3000/api";
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
-    const [token, setToken] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     // Cargar sesión
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
-        const storedToken = localStorage.getItem("token");
 
-        if (storedUser && storedToken) {
+        if (storedUser) {
             setUser(JSON.parse(storedUser));
-            setToken(storedToken);
         }
+        setLoading(false);
     }, []);
 
     // Iniciar sesión
@@ -28,21 +27,33 @@ export function AuthProvider({ children }) {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password })
             });
-
-            if (!res.ok) throw new Error("Credenciales inválidas");
-
+            
             const data = await res.json();
 
-            setUser(data.user);
-            setToken(data.token);
+            if (!res.ok) {
+                toast.error(data.message || "Credenciales inválidas");
+                return false;
+            }
+            
+            // Usuario + token unificado
+            const userWithToken = {
+                id: data.user.id,
+                name: data.user.name,
+                email: data.user.email,
+                role: data.user.role,
+                token: data.token
+            }
 
-            localStorage.setItem("user", JSON.stringify(data.user));
-            localStorage.setItem("token", data.token);
+            setUser(userWithToken);
 
-            toast.success(`Bienvenido ${data.user.name}`);
+            localStorage.setItem("user", JSON.stringify(userWithToken));
+
+            toast.success(`Bienvenido ${userWithToken.name}`);
             return true;
+
         } catch (error) {
-            toast.error(error.message);
+            console.error("LOGIN ERROR ", error);
+            toast.error("Error de conexion con el servidor");
             return false;
         }
     };
@@ -50,7 +61,6 @@ export function AuthProvider({ children }) {
     // Cerrar sesión
     const logout = () => {
         setUser(null);
-        setToken(null);
         localStorage.clear();
         toast.info("Sesión cerrada");
     };
@@ -60,7 +70,7 @@ export function AuthProvider({ children }) {
     return (
         <AuthContext.Provider value={{ 
             user, 
-            token,
+            setUser,
             isAuthenticated, 
             login, 
             logout

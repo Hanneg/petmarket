@@ -1,17 +1,21 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 export default function EditProfile() {
   const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  if (!user) return navigate("/login");
+  // Redirigir si no hay usuario
+  useEffect(() => {
+    if (!user) return navigate("/login");
+  }, [user, navigate]);  
 
   const [formData, setFormData] = useState({
-    name: user.name || "",
-    email: user.email || ""
+    name: user?.name || "",
+    email: user?.email || ""
   });
 
   const handleChange = (e) => {
@@ -21,19 +25,39 @@ export default function EditProfile() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const updatedUser = { ...user, ...formData };
+    try {
+      // PUT al backend con el token
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      const token = storedUser?.token;
 
-    // Actualiza el contexto
-    setUser(updatedUser);
+      if (!token) {
+        toast.error("No hay token de autenticación");
+        return;
+      }
 
-    // Actualiza el localStorage mientras no hay backend
-    localStorage.setItem("petmarket_user", JSON.stringify(updatedUser));
+      const response = await axios.put(
+        `http://localhost:3000/api/users/${user.id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
 
-    toast.success("Perfil actualizado correctamente");
-    navigate("/profile");
+      // Actualizar contexto y localStorage con los datos que devuelve el backend
+      setUser({ ...user, ...response.data });
+      localStorage.setItem("user", JSON.stringify({ ...user, ...response.data, token }));
+
+      toast.success("Perfil actualizado correctamente");
+      navigate("/profile");
+    } catch (error) {
+      console.error("EDIT USER ERROR ", error);
+      toast.error(error.response?.data?.message || "Error actualizando perfil");
+    }
   };
 
   return (

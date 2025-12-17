@@ -2,9 +2,10 @@ import React, { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 export default function ChangePassword() {
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
   if (!user) return navigate("/login");
@@ -22,7 +23,7 @@ export default function ChangePassword() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validaciones básicas
@@ -41,27 +42,30 @@ export default function ChangePassword() {
       return;
     }
 
-    // -------------------------
-    // Aquí irá el futuro backend
-    // -------------------------
-    // fetch("/api/change-password", {method: "POST", body: JSON.stringify(formData)})
-    //   .then(...)
-    //   .catch(...)
+    try {
+      await axios.put(
+        `http://localhost:3000/api/users/${user.id}/change-password`,
+        {
+          currentPassword: formData.currentPassword,
+          newPassword: formData.newPassword
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`
+          }
+        }
+      );
 
-    // Simulamos
-    const mockPasswords = {
-      "admin@petmarket.com": "123456",
-      "vendedor@petmarket.com": "456789",
-      "cliente@petmarket.com": "987654",
-    };
+      toast.success("Contraseña cambiada. Iniciar sesión nuevamente");
+      logout();
+      navigate("/login");
 
-    if (formData.currentPassword !== mockPasswords[user.email]) {
-      toast.error("La contraseña actual es incorrecta");
-      return;
+    } catch (error) {
+      console.error("CHANGE PASSWORD ERROR ", error);
+      toast.error(
+        error.response?.data?.message || "Error al cambiar contraseña"
+      );
     }
-
-    toast.success("Contraseña cambiada exitosamente");
-    navigate("/profile");
   };
 
   return (

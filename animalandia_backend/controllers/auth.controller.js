@@ -48,7 +48,7 @@ export const login = async (req, res) => {
         const { email, password } = req.body;
 
         const result = await pool.query(
-            "SELECT id, name, email, password, role FROM users WHERE email = $1",
+            "SELECT * FROM users WHERE email = $1",
             [email]
         );
 
@@ -59,24 +59,25 @@ export const login = async (req, res) => {
         const user = result.rows[0];
 
         const valid = await bcrypt.compare(password, user.password);
+
         if (!valid) {
             return res.status(401).json({ message: "Credenciales inválidas" });
         }
 
         const token = jwt.sign(
-            { id: user.id, role: user.role },
+            { id: user.id, email: user.email, role: user.role },
             process.env.DB_JWT,
             { expiresIn: "8h" }
         );
 
         res.json({
-            token,
             user: {
                 id: user.id,
                 name: user.name,
                 email: user.email,
                 role: user.role
-            }
+            },
+            token
         });
 
     } catch (error) {
