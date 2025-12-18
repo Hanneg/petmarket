@@ -27,13 +27,17 @@ export function AuthProvider({ children }) {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password })
             });
-            
-            const data = await res.json();
 
             if (!res.ok) {
-                toast.error(data.message || "Credenciales inválidas");
+                setUser(null);
+                localStorage.removeItem("user");
+
+                const errorData = await res.json();
+                toast.error(errorData.message || "Credenciales inválidas");
                 return false;
             }
+
+            const data = await res.json();
             
             // Usuario + token unificado
             const userWithToken = {
@@ -45,7 +49,6 @@ export function AuthProvider({ children }) {
             }
 
             setUser(userWithToken);
-
             localStorage.setItem("user", JSON.stringify(userWithToken));
 
             toast.success(`Bienvenido ${userWithToken.name}`);
