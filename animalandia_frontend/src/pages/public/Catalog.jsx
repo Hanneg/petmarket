@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { mockProducts } from "../../utils/mockData";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -7,13 +6,17 @@ import { toast } from "react-toastify";
 
 export default function Catalog() {
   const location = useLocation();
-  const [search, setSearch] = useState("");
-  const [category, setCategory] = useState("Todos");
-  const { addToCart } = useCart();
-  const { isAuthenticated } = useAuth(); // Para saber si el usuario esta logueado
   const navigate = useNavigate();
 
-  const categories = ["Todos", "Comida", "Accesorios", "Salud e higiene", "Perros", "Gatos"];
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [category, setCategory] = useState("Todos");
+
+  
+  const { addToCart } = useCart();
+  const { isAuthenticated } = useAuth(); // Para saber si el usuario esta logueado
 
   // Leer categoría desde query params al cargar la página
   useEffect(() => {
@@ -22,7 +25,40 @@ export default function Catalog() {
     if (cat) setCategory(cat);
   }, [location.search]);
 
-  const filteredProducts = mockProducts.filter((product) => {
+  // Obtener productos desde el backend
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/api/products");
+        const data = await res.json();
+        setProducts(data);
+      } catch (error) {
+        console.error("ERROR FETCH PRODUCTS", error);
+        toast.error("Error cargando productos");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/api/categories");
+        const data = await res.json();
+        setCategories([{ id: 0, name: "Todos" }, ...data]);
+      } catch (error) {
+        console.error("ERROR FETCH CATEGORIES", error);
+        toast.error("Error cargando categorías");
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const filteredProducts = products.filter((product) => {
     const matchCategory = category === "Todos" || product.category === category;
     const matchSearch = product.name.toLowerCase().includes(search.toLowerCase());
     return matchCategory && matchSearch;
@@ -71,12 +107,20 @@ export default function Catalog() {
         <div className="form-field">
           <select
             value={category}
-            onChange={(e) => {setCategory(e.target.value); navigate(`/catalog?category=${e.target.value}`)}}
+            onChange={(e) => {
+              const value = e.target.value;
+              setCategory(value); 
+              
+              if (value === "Todos") {
+                navigate("/catalog");
+              } else {
+                navigate(`/catalog?category=${value}`)}}
+              }
             className="form-control"
           >
             {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
+              <option key={cat.id} value={cat.name}>
+                {cat.name}
               </option>
             ))}
           </select>
@@ -90,7 +134,7 @@ export default function Catalog() {
             <div key={product.id} className="card p-2 shadow-1 mr-2">
               <div className="card-image">
                 <img
-                  src={product.image}
+                  src={product.image_url}
                   alt={product.name}
                   style={{
                     width: "100%",
@@ -100,10 +144,10 @@ export default function Catalog() {
                   }}
                 />
               </div>
-              <div className="card-content">
-                <h5 className="mt-2 text-secondary">{product.name}</h5>
-                <p className="mb-1 grey-text text-accent font-w800">Precio: ${product.price.toFixed(2)}</p>
-                <p className="text-small text-secondary">{product.description}</p>
+              <div className="card-body">
+                <h5 className="product-title mt-2 text-secondary">{product.name}</h5>
+                <p className="product-price mb-1 grey-text text-accent font-w800">Precio: ${product.price}</p>
+                <p className="product-description text-small text-secondary">{product.description}</p>
               </div>
               <div className="card-footer d-flex justify-content-center">
                 <button className="btn primary mr-2 rounded-2 text-background" onClick={() => navigate(`/product/${product.id}`)}>

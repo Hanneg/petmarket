@@ -1,6 +1,5 @@
-import React from "react";
+import { useState, useEffect, React } from "react"
 import { useParams, useNavigate } from "react-router-dom";
-import { mockProducts } from "../../utils/mockData";
 import { useCart } from "../../context/CartContext";
 import { toast } from "react-toastify";
 import ProductCard from "../../components/ProductCard";
@@ -9,10 +8,43 @@ import { useAuth } from "../../context/AuthContext";
 export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+
   const { addToCart } = useCart();
   const { isAuthenticated } = useAuth();
 
-  const product = mockProducts.find((p) => p.id === Number(id));
+  const [product, setProduct] = useState(null);
+  const [related, setRelated] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Obtener producto por ID
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/api/products/${id}`);
+        if (!res.ok) throw new Error("Producto no encontrado");
+
+        const data = await res.json();
+        setProduct(data);
+
+        // Obtener relacionados (misma categoría)
+        const relRes = await fetch("http://localhost:3000/api/products");
+        const allProducts = await relRes.json();
+
+        const filtered = allProducts.filter(
+          (p) => p.category === data.category && p.id !== data.id
+        );
+
+        setRelated(filtered);
+      } catch (error) {
+        console.error(error);
+        setProduct(null);
+      } finally {
+        setLoading(false)
+      }
+    };
+
+    fetchProduct();
+  }, [id]);
 
   if (!product) {
     return (
@@ -28,13 +60,19 @@ export default function ProductDetail() {
     );
   }
 
-  const related = mockProducts.filter(
-    (p) => p.category === product.category && p.id !== product.id
-  );
-
   const handleAddToCart = () => {
-    addToCart(product);
-    toast.success(`${product.name} agregado al carrito 🛒`);
+    if (!isAuthenticated) {
+      toast.info("Debes inciar sesión para agregar productos");
+      navigate("/login");
+      return;
+    }
+
+    const qty = Number(
+      document.getElementById("quantity-selector").value
+    );
+
+    addToCart(product, qty);
+    toast.success(`${qty} x ${product.name} agregado al carrito 🛒`);
   };
 
   return (
@@ -51,7 +89,7 @@ export default function ProductDetail() {
           <p className="text-flow mb-3">{product.description}</p>
 
           <h3 className="text-primary fw-bold mb-4">
-            ${product.price.toFixed(2)}
+            ${product.price}
           </h3>
 
           {/* Selección de cantidad */}
@@ -69,16 +107,7 @@ export default function ProductDetail() {
           <div className="d-flex flex-wrap gap-2 mt-4">
             <button
               className="btn btn-primary secondary rounded-2 mr-2"
-              onClick={() => {
-                if (!isAuthenticated) {
-                  toast.info("Debes iniciar sesión para agregar productos");
-                  navigate("/login");
-                  return
-                }
-                const qty = Number(document.getElementById("quantity-selector").value);
-                addToCart(product, qty);
-                toast.success(`${qty} × ${product.name} agregado(s) al carrito 🛒`);
-              }}
+              onClick={handleAddToCart}
             >
               <i className="fas fa-cart-plus me-1 text-background"></i>
               Agregar al carrito
@@ -97,7 +126,7 @@ export default function ProductDetail() {
         {/* Imagen del producto (derecha) */}
         <div className="product-image card shadow-2 rounded-3 mb-4">
           <img
-            src={product.image}
+            src={product.image_url}
             alt={product.name}
             className="product-image-img"
           />

@@ -1,23 +1,49 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CategoryCard from "../../components/CategoryCard";
 import ProductCard from "../../components/ProductCard";
-import { mockProducts } from "../../utils/mockData";
 
 export default function Home() {
   const navigate = useNavigate();
   const scrollRef = useRef(null);
 
-  // Rutas de imágenes desde /public/images
-  const categories = [
-    { id: 1, name: "Perros", image: "/src/assets/images/categoria_perros.jpg" },
-    { id: 2, name: "Gatos", image: "/src/assets/images/categoria_gato.jpg" },
-    { id: 3, name: "Accesorios", image: "/src/assets/images/categoria_accesorios.jpg" },
-    { id: 4, name: "Comida", image: "/src/assets/images/categoria_comida.jpg" },
-    { id: 5, name: "Salud e higiene", image: "/src/assets/images/categoria_higiene.jpg" },
-  ];
+  const [categories, setCategories] = useState([]);
+  const [featured, setFeatured] = useState([]);
 
-  const featured = mockProducts.slice(0, 8);
+  const categoryImages = {
+    Accesorios: "/src/assets/images/categoria_accesorios.jpg",
+    perros: "/src/assets/images/categoria_perros.jpg",
+    gatos: "/src/assets/images/categoria_gato.jpg",
+    "Otros animalitos": "/src/assets/images/categoria_higiene.jpg",
+    Comida: "/src/assets/images/categoria_comida.jpg",
+  }
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const res = await fetch("http://localhost:3000/api/categories");
+      const data = await res.json();
+
+      // Mezclar backend + imágenes
+      const withImages = data.map((cat) => ({
+        ...cat,
+        image: categoryImages[cat.name] || "/src/assets/images/default.jpg",
+      }));
+
+      setCategories(withImages);
+    };
+
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      const res = await fetch("http://localhost:3000/api/products");
+      const data = await res.json();
+     setFeatured(data.slice(0, 8));
+    };
+
+    fetchFeatured();
+  }, []);
 
   // Función para scroll del carrusel
   const scroll = (dir) => {
@@ -48,7 +74,7 @@ export default function Home() {
       </section>
 
       {/* Barra horizontal informativa */}
-      <section className="bg-grey text-center py-2 shadow-1 accent text-secondary font-w800">
+      <section className="bg-grey text-center py-2 shadow-1 accent text-background font-w800">
         <div 
           className="container text-dark"
           style={{
@@ -59,7 +85,7 @@ export default function Home() {
             margin: '0 auto'
           }}
         >
-            <span>🚚 Envíos gratis a partir de $50</span>
+            <span>🚚 Envíos gratis a partir de $150</span>
             <span>📞 Atención 24/7</span>
             <span>💳 Pagos seguros</span>
         </div>
@@ -68,47 +94,50 @@ export default function Home() {
       {/* Categorías destacadas */}
       <section className="container mt-6 mb-6">
         <h3 className="text-center mb-4 text-secondary">Categorías destacadas</h3>
-        <div className="category-grid">
-          {/* Columna izquierda */}
-          <div className="category-col">
-            <CategoryCard
-              {...categories[0]}
-              onClick={() => navigate(`/catalog?category=${categories[0].name}`)}
-            />
-            <CategoryCard
-              {...categories[1]}
-              onClick={() => navigate(`/catalog?category=${categories[1].name}`)}
-            />
+
+        {categories.length >=5 && (
+          <div className="category-grid">
+            {/* Columna izquierda */}
+            <div className="category-col">
+              <CategoryCard
+                {...categories[0]}
+                onClick={() => navigate(`/catalog?category=${categories[0].name}`)}
+              />
+              <CategoryCard
+                {...categories[1]}
+                onClick={() => navigate(`/catalog?category=${categories[1].name}`)}
+              />
           </div>
 
-          {/* Columna central */}
-          <div className="category-col middle">
-            <CategoryCard
-              {...categories[2]}
-              onClick={() => navigate(`/catalog?category=${categories[2].name}`)}
-              className="large"
-            />
-          </div>
+            {/* Columna central */}
+            <div className="category-col middle">
+              <CategoryCard
+                {...categories[2]}
+                onClick={() => navigate(`/catalog?category=${categories[2].name}`)}
+                className="large"
+              />
+            </div>
 
-          {/* Columna derecha */}
-          <div className="category-col">
-            <CategoryCard
-              {...categories[3]}
-              onClick={() => navigate(`/catalog?category=${categories[3].name}`)}
-            />
-            <CategoryCard
-              {...categories[4]}
-              onClick={() => navigate(`/catalog?category=${categories[4].name}`)}
-            />
+            {/* Columna derecha */}
+            <div className="category-col">
+              <CategoryCard
+                {...categories[3]}
+                onClick={() => navigate(`/catalog?category=${categories[3].name}`)}
+              />
+              <CategoryCard
+                {...categories[4]}
+                onClick={() => navigate(`/catalog?category=${categories[4].name}`)}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </section>
 
 
       {/* Productos destacados */}
       <section className="container mt-6 mb-6">
         {/* Encabezado */}
-        <h3 className="text-secondary mb-3 text-center">Productos destacados</h3>
+        <h3 className="text-secondary mt-5 mb-3 text-center">Productos destacados</h3>
         {/* Carusel con botones laterales */}
         <div className="relative">
           <button
@@ -122,7 +151,7 @@ export default function Home() {
             {featured.map((product) => (
               <div
                 key={product.id}
-                style={{ minWidth: "250px", flex: "0 0 auto" }}
+                style={{ minWidth: "250px", flex: "0 0 350px" }}
               >
                 <ProductCard product={product} />
               </div>
@@ -137,7 +166,7 @@ export default function Home() {
           </button>
         </div>
 
-        <div className="text-center text-background justify-content-center align-items-center mb-4">    
+        <div className="text-center text-background justify-content-center align-items-center mb-4 mt-4">    
           <button
             className="btn small secondary rounded-2"
             onClick={() => navigate("/catalog")}
