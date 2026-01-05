@@ -7,27 +7,61 @@ export default function Profile() {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // Estados que luego llenará el backend
+  // Client
   const [orders, setOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+  
+  // Seller
   const [publications, setPublications] = useState([]);
 
-  // Simulación de la futura llamada del backend
+  // =======================
+  // PROTECCIÓN GENENRAL
+  // =======================
   useEffect(() => {
-    if (!user) return;
-
-    if (user.role === "client") {
-      setOrders([]);
+    if (!user) {
+      navigate("/login");
     }
+  }, [user, navigate]);
 
-    if (user.role === "seller") {
-      setPublications([]);
-    }
+  // =======================
+  // CLIENT -> Pedidos
+  // =======================
+  useEffect(() => {
+    if (!user || user.role !== "client") return;
+
+    const fetchOrders = async () => {
+      setOrdersLoading(true);
+
+      try {
+        const res = await fetch("http://localhost:3000/api/orders", {
+          headers: {
+            Authorization: `Bearer ${user.token}`
+          },
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || "Error al obtener pedidos");
+        }
+
+        setOrders(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error(error);
+        toast.error("Error al cargar pedidos");
+        setOrders([]);
+      } finally {
+        setOrdersLoading(false);
+      }
+    };
+
+    fetchOrders();
   }, [user]);
 
   if (!user) return <p>No has iniciado sesión</p>
 
   // Cliente
-  if (user.role === "client") {
+  if (user?.role === "client") {
     return (
       <div className="container mt-5">
         <h3 className="text-center mb-4">👤 Mi Perfil</h3>
@@ -60,20 +94,41 @@ export default function Profile() {
           </div>
 
           <h5 className="mb-2">🛍️ Últimos pedidos</h5>
-          {orders.length === 0 ? (
-            <p className="text-muted">
-              No tienes pedidos aún.
-            </p>
-          ) : (
-            <ul className="list">
-              {orders.slice(0, 3).map((order) => (
-                <li key={order.id} className="list-item">
-                  {order.title} - {order.date}
-                </li>
-              ))}
-            </ul>
-          )}
 
+          {ordersLoading ? (
+            <p className="text-muted">Cargando pedidos...</p>
+          ) : orders.length === 0 ? (
+            <p className="text-muted">No tienes pedidos aún.</p>
+          ) : (
+            <table className="table table-sm mt-3">
+              <thead>
+                <tr>
+                  <th>N° Pedido</th>
+                  <th>Total</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.slice(0, 5).map((order) => (
+                <tr key={order.id}>
+                  <td>#{order.id}</td>
+                  <td>${order.total}</td>
+                  <td>
+                    <span className={`badge ${
+                      order.status === "completed"
+                        ? "green"
+                        : order.status === "pending"
+                        ? "yellow"
+                        : "gray"
+                    }`}>
+                      {order.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}  
+              </tbody>
+            </table>
+          )}
           <Link to="/orders" className="btn primary rounded-2 light mt-3 full-width">
             Ver todos los pedidos
           </Link>

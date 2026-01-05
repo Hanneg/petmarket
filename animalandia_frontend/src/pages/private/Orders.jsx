@@ -1,22 +1,64 @@
-import React, { useEffect, useState } from "react";
-import { getMockOrders } from "../../utils/mockData";
+import React, { useContext, useEffect, useState } from "react";
+// import { getMockOrders } from "../../utils/mockData";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
+import { toast } from "react-toastify";
 
 export default function Orders() {
-  const [orders, setOrders] = useState([]);
+  const { user } = useContext(AuthContext); 
   const navigate = useNavigate();
 
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  // ======================
+  // PROTECCION
+  // ======================
   useEffect(() => {
-    // En un futuro esto será una petición al backend (axios)
-    const data = getMockOrders();
-    setOrders(data);
-  }, []);
+    if (!user) {
+      navigate("/login");
+    }
+  }, [user, navigate]);
+
+  useEffect(() => {
+    if (!user || user.role !== "client") return;
+
+    const fetchOrders = async () => {
+      setLoading(true);
+
+      try {
+        const res = await fetch("http://localhost:3000/api/orders", {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || "Error al obtener pedidos");
+        }
+
+        setOrders(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error(error);
+        toast.error("No se pudieron cargar los pedidos");
+        setOrders([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, [user]);
 
   return (
-    <div className="container mt-5 mb-5">
+    <div className="container mt-5 mb-5 text-secondary">
       <h3 className="mb-4 text-center">📦 Mis pedidos</h3>
 
-      {orders.length === 0 ? (
+      {loading ? (
+        <p className="text-center text-muted">Cargando pedidos...</p>
+      ) : orders.length === 0 ? (
         <div className="text-center mt-5">
           <p>No tienes pedidos realizados 😿</p>
           <button
@@ -42,16 +84,16 @@ export default function Orders() {
               {orders.map((order) => (
                 <tr key={order.id}>
                   <td>#{order.id}</td>
-                  <td>{order.date}</td>
-                  <td>${order.total.toFixed(2)}</td>
+                  <td>{new Date(order.created_at).toLocaleDateString()}</td>
+                  <td>${order.total}</td>
                   <td>
                     <span
                       className={`badge ${
-                        order.status === "Completado"
-                          ? "primary"
-                          : order.status === "Pendiente"
-                          ? "accent"
-                          : "red"
+                        order.status === "completed"
+                          ? "green"
+                          : order.status === "pending"
+                          ? "yellow"
+                          : "gray"
                       }`}
                     >
                       {order.status}
@@ -59,7 +101,7 @@ export default function Orders() {
                   </td>
                   <td>
                     <button
-                      className="btn secondary rounded-2"
+                      className="btn primary rounded-2"
                       onClick={() => navigate(`/orders/${order.id}`)}
                     >
                       Ver

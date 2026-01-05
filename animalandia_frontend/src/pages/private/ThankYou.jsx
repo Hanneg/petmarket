@@ -10,7 +10,7 @@ export default function ThankYou() {
       <p className="mt-3 mb-4">
         Tu pedido ha sido procesado con éxito. Recibirás una confirmación por correo.
       </p>
-      <button className="btn secondary" onClick={() => navigate("/catalog")}>
+      <button className="btn secondary rounded-2" onClick={() => navigate("/catalog")}>
         Volver al catálogo
       </button>
     </div>

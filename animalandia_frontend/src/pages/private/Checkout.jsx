@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -12,26 +13,52 @@ const schema = yup.object().shape({
 });
 
 export default function Checkout() {
+    const { user } = useAuth();
     const { cartItems, total, clearCart } = useCart();
     const navigate = useNavigate();
 
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm({ resolver: yupResolver(schema) });
 
-    const onSubmit = (data) => {
-        // Aquí luego se enviará el backend
-        console.log("Datos de compra:", data);
+    const onSubmit = async (data) => {
+        try {
+            if (!user?.token) {
+                toast.error("Debes iniciar sesión para comprar");
+                navigate("/login");
+                return;
+            }
 
-        toast.success("Compra confirmada 🎉")
-        clearCart();
+            const res = await fetch("http://localhost:3000/api/orders", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${user.token}`
+                },
+                body: JSON.stringify({
+                    address: data.address,
+                    payment_method: data.payment,
+                    items: cartItems.map(item => ({
+                        product_id: item.id,
+                        product_name: item.name,
+                        price: item.price,
+                        quantity: item.quantity
+                    }))
+                }),
+            });
 
-        // Redirigir a página de agradecimiento
-        setTimeout(() => {
+            if (!res.ok) throw new Error("Error al crear la orden");
+
+            toast.success("Compra confirmada 🎉");
+            clearCart();
             navigate("/thankyou");
-        }, 1500);
+
+        } catch (error) {
+            console.error(error);
+            toast.error("Error al procesar la compra 😿")
+        }
     };
 
     if (cartItems.length === 0) {
@@ -57,13 +84,13 @@ export default function Checkout() {
                         type="text"
                         {...register("address")}
                         className="form-control"
-                        placeholder="Ej: Calle 123, Cuidad"
+                        placeholder="Ej: Calle 123, Ciudad"
                     />
                     <p className="text-danger">{errors.address?.message}</p>
                 </div>
 
                 {/* Método de pago */}
-                <div className="form-field mb-3">
+                <div className="form-field mb-3 text-secondary">
                     <label className="text-secondary">Método de pago</label>
                     <select {...register("payment")} className="form-control">
                         <option value="">Selecciona una opción</option>
@@ -79,15 +106,19 @@ export default function Checkout() {
                 <ul className="mb-3">
                     {cartItems.map((item) => (
                         <li key={item.id} className="text-secondary">
-                            {item.name} x {item.quantity} - ${(item.price * item.quantity).toFixed(2)} 
+                            {item.name} x {item.quantity} - ${(item.price * item.quantity)} 
                         </li>
                     ))}
                 </ul>
-                <h5 className="text-secondary">Total: ${total.toFixed(2)}</h5>
+                <h5 className="text-secondary">Total: ${total}</h5>
 
                 {/* Botón */}
-                <button type="submit" className="btn secondary full-width mt-3 rounded-2">
-                    Confirmar compra
+                <button 
+                    type="submit" 
+                    className="btn secondary full-width mt-3 rounded-2"
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? "Procesando..." : "Confirmar compra"}
                 </button>
             </form>
         </div>

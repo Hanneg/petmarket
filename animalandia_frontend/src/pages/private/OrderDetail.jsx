@@ -1,42 +1,82 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getMockOrders } from "../../utils/mockData";
+//import { getMockOrders } from "../../utils/mockData";
+import { AuthContext } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 
 export default function OrderDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+  
   const [order, setOrder] = useState(null);
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(false);
 
+  // =====================
+  // PROTECCION
+  // =====================
   useEffect(() => {
-    const orders = getMockOrders();
-    const found = orders.find((o) => Number(o.id) === Number(id));
-
-    if (!found) {
-      toast.error("El pedido no existe");
-      navigate("/orders");
-      return;
+    if (!user) {
+      navigate("/login");
     }
+  }, [user, navigate]);
 
-    setOrder(found);
-  }, [id, navigate]);
+  // =====================
+  // FETCH DETALLE PEDIDO
+  // =====================
+  useEffect(() => {
+    if (!user || user.role !== "client") return;
 
-  if (!order)
+    const fetchOrder = async () => {
+      setLoading(true);
+
+      try {
+        const res = await fetch(`http://localhost:3000/api/orders/${id}`, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || "Pedido no encontrado");
+        }
+
+        setOrder(data.order);
+        setItems(data.items);
+      } catch (error) {
+        console.error(error);
+        toast.error("No se pudo cargar el pedido");
+        navigate("/orders");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrder();
+  }, [id, user, navigate]);
+
+  if (loading) {
     return (
       <div className="container mt-5">
-        <p className="text-center text-secondary">Cargando pedido...</p>
+        <p className="text-center text-muted">Cargando pedidos...</p>
       </div>
-    );
+    )
+  }
+
+  if (!order) return null;
 
   // Función para asignar color según estado
   const getBadgeColor = (status) => {
     switch (status) {
-      case "Completado":
-        return "success";
-      case "Pendiente":
-        return "warning";
-      case "Cancelado":
-        return "danger";
+      case "completed":
+        return "green";
+      case "pending":
+        return "yellow";
+      case "cancelled":
+        return "red";
       default:
         return "primary";
     }
@@ -55,7 +95,7 @@ export default function OrderDetail() {
         <div className="card-content p-4">
           <div className="row mb-2">
             <div className="col s12 m4 fw-semibold">Fecha:</div>
-            <div className="col s12 m8">{order.date}</div>
+            <div className="col s12 m8">{new Date(order.created_at).toLocaleDateString()}</div>
           </div>
           <div className="row mb-2">
             <div className="col s12 m4 fw-semibold">Estado:</div>
@@ -65,9 +105,17 @@ export default function OrderDetail() {
               </span>
             </div>
           </div>
+          <div className="row mb-2">
+            <div className="col s12 m4 fw-semibold">Dirección:</div>
+            <div className="col s12 m8">{order.address}</div>
+          </div>
+          <div className="row mb-2">
+            <div className="col s12 m4 fw-semibold">Método de pago:</div>
+            <div className="col s12 m8">{order.payment_method}</div>
+          </div>
           <div className="row">
             <div className="col s12 m4 fw-semibold">Total:</div>
-            <div className="col s12 m8 fw-bold">${order.total.toFixed(2)}</div>
+            <div className="col s12 m8 fw-bold">${order.total}</div>
           </div>
         </div>
       </div>
@@ -78,7 +126,7 @@ export default function OrderDetail() {
           <h5 className="card-title mb-0">🛒 Productos del pedido</h5>
         </div>
         <div className="card-content p-3">
-          {order.items && order.items.length > 0 ? (
+          {items.length > 0 ? (
             <div className="table-responsive">
               <table className="table striped bordered hover">
                 <thead>
@@ -90,19 +138,19 @@ export default function OrderDetail() {
                   </tr>
                 </thead>
                 <tbody>
-                  {order.items.map((item, index) => (
+                  {items.map((item, index) => (
                     <tr key={index}>
-                      <td>{item.name}</td>
+                      <td>{item.product_name}</td>
                       <td>{item.quantity}</td>
-                      <td>${item.price.toFixed(2)}</td>
-                      <td>${(item.price * item.quantity).toFixed(2)}</td>
+                      <td>${item.price}</td>
+                      <td>${(item.price * item.quantity)}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
           ) : (
-            <p className="text-muted mb-0">Este pedido no tiene productos (mock).</p>
+            <p className="text-muted mb-0">Este pedido no tiene productos.</p>
           )}
         </div>
       </div>
@@ -110,7 +158,7 @@ export default function OrderDetail() {
       {/* Botón volver */}
       <div className="text-center mt-4">
         <button
-          className="btn secondary"
+          className="btn secondary rounded-2"
           onClick={() => navigate("/orders")}
         >
           ← Volver a mis pedidos

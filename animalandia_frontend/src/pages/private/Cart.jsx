@@ -59,7 +59,7 @@ export default function Cart() {
                                                     <span className="fw-bold text-secondary">{item.name}</span>
                                                 </div>
                                             </td>
-                                            <td className="text-secondary">${item.price.toFixed(2)}</td>
+                                            <td className="text-secondary">${item.price}</td>
                                             <td>
                                                 <div className="cart-qty-wrapper">
                                                     <button
@@ -78,7 +78,7 @@ export default function Cart() {
                                                     </button>
                                                 </div>
                                             </td>
-                                            <td className="text-secondary">${(item.price * item.quantity).toFixed(2)}</td>
+                                            <td className="text-secondary">${(item.price * item.quantity)}</td>
                                             <td>
                                                 <button
                                                     className="btn small hover lighten-1 text-background rounded-2"
@@ -99,7 +99,7 @@ export default function Cart() {
                     <div className="container">
                         <div className="grix xs1 sm2 md2 between vcenter">
                             <div className="col">
-                                <h5 className="fw-bold text-secondary">Total: ${total.toFixed(2)}</h5>
+                                <h5 className="fw-bold text-secondary">Total: ${total}</h5>
                             </div>
                             <div className="col text-right text-center-xs">
                                 <button className="btn secondary light me-2 mr-2 rounded-2" onClick={clearCart}>
