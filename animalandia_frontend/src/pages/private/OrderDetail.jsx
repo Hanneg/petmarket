@@ -13,9 +13,6 @@ export default function OrderDetail() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // =====================
-  // PROTECCION
-  // =====================
   useEffect(() => {
     if (!user) {
       navigate("/login");
@@ -39,6 +36,8 @@ export default function OrderDetail() {
         });
 
         const data = await res.json();
+
+        console.log("DATA ORDER DETAIL:", data);
 
         if (!res.ok) {
           throw new Error(data.message || "Pedido no encontrado");
@@ -68,19 +67,84 @@ export default function OrderDetail() {
 
   if (!order) return null;
 
-  // Función para asignar color según estado
-  const getBadgeColor = (status) => {
+  const status = typeof order.status === "string"
+    ? order.status
+    : order.status?.name;
+
+  const getStatusBadge = (status) => {
     switch (status) {
-      case "completed":
-        return "green";
-      case "pending":
-        return "yellow";
-      case "cancelled":
-        return "red";
+      case "PENDING":
+        return { text: "Pendiente", className: "yellow" };
+      case "APPROVED":
+        return { text: "Aprobado", className: "blue" };
+      case "SHIPPED":
+        return { text: "Enviado", className: "accent" };
+      case "COMPLETED":
+        return { text: "Completado", className: "green" };
+      case "CANCELLED":
+        return { text: "Cancelado", className: "red" };
       default:
-        return "primary";
+        return { text: status, className: "gray" };
     }
   };
+
+  // Acciones del cliente
+  const handleCancelOrder = async () => {
+    if (!window.confirm("Seguro que deseas cancelar este pedido")) return;
+
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/orders/${order.id}/cancel`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
+      
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "No se pudo cancelar el pedido");
+      }
+      
+      toast.success("Pedido cancelado")
+      setOrder((prev) => ({ ...prev, status: "CANCELLED"}))
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  // Marcar pedido como recibido (solo si está shipped)
+  const handleCompleteOrder = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/orders/${order.id}/complete`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "No se pudo completar el pedido")
+      }
+
+      toast.success("Pedido marcado como recibido");
+      setOrder((prev) => ({ ...prev, status: "COMPLETED"}));
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  console.log("STATUS ACTUAL:", status);
+
+  const normalizedStatus = status?.toUpperCase();
 
   return (
     <div className="container mt-5 mb-5 text-secondary">
@@ -100,9 +164,14 @@ export default function OrderDetail() {
           <div className="row mb-2">
             <div className="col s12 m4 fw-semibold">Estado:</div>
             <div className="col s12 m8">
-              <span className={`badge ${getBadgeColor(order.status)}`}>
-                {order.status}
-              </span>
+              {(() => {
+                  const badge = getStatusBadge(status);
+                  return (
+                    <span className={`badge ${badge.className}`}> 
+                      {badge.text}
+                    </span>
+                  );
+              })()}
             </div>
           </div>
           <div className="row mb-2">
@@ -118,6 +187,27 @@ export default function OrderDetail() {
             <div className="col s12 m8 fw-bold">${order.total}</div>
           </div>
         </div>
+      </div>
+
+      {/* Acciones del cliente */}
+      <div className="text-center mt-4 d-flex justify-content-center gap-3">
+        {normalizedStatus === "PENDING" && (
+          <button
+            className="btn red rounded-2"
+            onClick={handleCancelOrder}
+          >
+            ❌ Cancelar pedido
+          </button>
+        )}
+
+        {normalizedStatus === "SHIPPED" && (
+          <button
+            className="btn primary rounded-2"
+            onClick={handleCompleteOrder}
+          >
+            📦 Marcar como recibido
+          </button>
+        )}
       </div>
 
       {/* Productos */}

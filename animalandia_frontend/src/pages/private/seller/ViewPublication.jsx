@@ -1,28 +1,55 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { mockProducts } from "../../utils/mockData";
+import { useAuth } from "../../../context/AuthContext";
+import { toast } from "react-toastify";
+//import { mockProducts } from "../../../utils/mockData";
 
 export default function ViewPublication() {
   const { id } = useParams();
+  const { user } = useAuth();
   const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const found = mockProducts.find((item) => item.id === Number(id));
-    setProduct(found);
-  }, [id]);
+    const fetchPublication = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/api/seller/publications/${id}`, 
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        );
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || "Error al cargar publicación");
+        }
+
+        setProduct(data);
+      } catch (error) {
+        console.error(error);
+        toast.error("No se pudo cargar la publicación");
+        navigate("/my-publications");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user?.role === "seller") {
+      fetchPublication();
+    }
+  }, [id, user, navigate]);
 
   if (!product) return <p className="text-center mt-5">Cargando...</p>;
 
   return (
     <div className="container mt-5 mb-4" style={{ maxWidth: "900px" }}>
-      
       <h3 className="text-secondary mb-4 text-center">Ver publicación</h3>
-
       <div className="viewpub-card shadow-1 p-4">
-        
         <div className="viewpub-grid">
-          
           {/* Imagen */}
           <div className="viewpub-image-wrapper">
             <img
@@ -35,14 +62,10 @@ export default function ViewPublication() {
           {/* Información */}
           <div className="viewpub-info">
             <h2 className="fw-bold text-secondary">{product.name}</h2>
-            <p className="text-accent font-w600">{product.category}</p>
-
+            <p className="text-accent font-w600">{product.description}</p>
+            <p className="text-accent font-w600">{product.category_name}</p>
             <h3 className="price mt-3 mb-3">${product.price}</h3>
-
-            <p className="description">
-              {product.description || "Sin descripción disponible."}
-            </p>
-
+            <p className="text-accent font-w600">Stock: {product.stock}</p>
             <div className="viewpub-actions">
               <button
                 className="btn primary rounded-2"

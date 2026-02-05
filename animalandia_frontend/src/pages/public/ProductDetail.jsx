@@ -15,6 +15,16 @@ export default function ProductDetail() {
   const [product, setProduct] = useState(null);
   const [related, setRelated] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [quantity, setQuantity] = useState([]);
+
+  const handleQuantityChange = (e) => {
+    let value = Number(e.target.value);
+
+    if (value < 1) value = 1;
+    if (value > product.stock) value = product.stock;
+
+    setQuantity(value);
+  };
 
   // Obtener producto por ID
   useEffect(() => {
@@ -92,22 +102,33 @@ export default function ProductDetail() {
             ${product.price}
           </h3>
 
-          {/* Selección de cantidad */}
+          {product.stock <= 5 && product.stock > 0 && (
+            <p className="text-red fw-bold">
+              Solo quedan {product.stock} unidades
+            </p>
+          )}
           <div className="mb-3">
             <label className="text-secondary fw-bold">Cantidad:</label>
-            <input
-              type="number"
-              min="1"
-              defaultValue="1"
-              className="quantity-input"
-              id="quantity-selector"
-            />
-          </div>
+              {product.stock > 0 ? (
+                <input
+                  type="number"
+                  min={1}
+                  max={product.stock}
+                  value={quantity}
+                  onChange={handleQuantityChange}
+                  className="quantity-input"
+                  id="quantity-selector"
+                  />
+              ) : (
+                <p className="text-red fw-bold">Producto agotado</p>
+              )}
+          </div>          
 
           <div className="d-flex flex-wrap gap-2 mt-4">
             <button
               className="btn btn-primary secondary rounded-2 mr-2"
               onClick={handleAddToCart}
+              disabled={product.stock === 0}
             >
               <i className="fas fa-cart-plus me-1 text-background"></i>
               Agregar al carrito

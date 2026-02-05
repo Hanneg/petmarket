@@ -15,13 +15,14 @@ import Orders from "../pages/private/Orders.jsx";
 import Cart from "../pages/private/Cart.jsx";
 import Checkout from "../pages/private/Checkout.jsx";
 import ThankYou from "../pages/private/ThankYou.jsx";
-import MyPublications from "../pages/private/MyPublications.jsx";
-import CreatePublication from "../pages/private/CreatePublication.jsx";
+import MyPublications from "../pages/private/seller/MyPublications.jsx";
+import CreatePublication from "../pages/private/seller/CreatePublication.jsx";
 import EditProfile from "../pages/private/EditProfile.jsx";
 import ChangePassword from "../pages/private/ChangePassword.jsx";
 import OrderDetail from "../pages/private/OrderDetail.jsx";
-import ViewPublication from "../pages/private/ViewPublication.jsx";
-import EditPublication from "../pages/private/EditPublication.jsx";
+import ViewPublication from "../pages/private/seller/ViewPublication.jsx";
+import EditPublication from "../pages/private/seller/EditPublication.jsx";
+import SellerOrders from "../pages/private/seller/SellerOrders.jsx";
 // Administración
 import Dashboard from "../pages/admin/Dashboard.jsx";
 import DashboardHome from "../pages/admin/DashboardHome.jsx";
@@ -56,6 +57,7 @@ export default function AppRouter() {
 
             {/* Vendedor */}
             <Route path="/my-publications" element={<ProtectedRoute role="seller"><MyPublications/></ProtectedRoute>}/>
+            <Route path="/seller-orders" element={<ProtectedRoute role="seller"><SellerOrders/></ProtectedRoute>}/>
             <Route path="/create-publications" element={<ProtectedRoute role="seller"><CreatePublication/></ProtectedRoute>}/>
             <Route path="/view-publication/:id" element={<ProtectedRoute role="seller"><ViewPublication/></ProtectedRoute>}/>
             <Route path="/edit-publication/:id" element={<ProtectedRoute role="seller"><EditPublication/></ProtectedRoute>}/>

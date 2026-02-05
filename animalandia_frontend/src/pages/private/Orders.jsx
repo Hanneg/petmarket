@@ -11,9 +11,6 @@ export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // ======================
-  // PROTECCION
-  // ======================
   useEffect(() => {
     if (!user) {
       navigate("/login");
@@ -87,17 +84,36 @@ export default function Orders() {
                   <td>{new Date(order.created_at).toLocaleDateString()}</td>
                   <td>${order.total}</td>
                   <td>
-                    <span
-                      className={`badge ${
-                        order.status === "completed"
-                          ? "green"
-                          : order.status === "pending"
-                          ? "yellow"
-                          : "gray"
-                      }`}
-                    >
-                      {order.status}
-                    </span>
+                    {(() => {
+                      const status = typeof order.status === "string"
+                        ? order.status
+                        : order.status?.name;
+
+                      const getStatusBadge = (status) => {
+                        switch (status) {
+                          case "PENDING":
+                            return { text: "Pendiente", className: "yellow" };
+                          case "APPROVED":
+                            return { text: "Aprobado", className: "blue" };
+                          case "SHIPPED":
+                            return { text: "Enviado", className: "accent" };
+                          case "COMPLETED":
+                            return { text: "Completado", className: "green" };
+                          case "CANCELLED":
+                            return { text: "Cancelado", className: "red" };
+                          default:
+                            return { text: status, className: "gray" };
+                        }
+                      };
+
+                      const badge = getStatusBadge(status);
+
+                      return (
+                        <span className={`badge ${badge.className}`}> 
+                          {badge.text}
+                        </span>
+                      );
+                    })()}
                   </td>
                   <td>
                     <button

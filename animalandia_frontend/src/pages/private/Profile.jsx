@@ -12,20 +12,19 @@ export default function Profile() {
   const [ordersLoading, setOrdersLoading] = useState(false);
   
   // Seller
+  const [sellerOrders, setSellerOrders] = useState([]);
+  const [sellerOrderSloading, setSellerOrdersLoading] = useState(false);
   const [publications, setPublications] = useState([]);
 
-  // =======================
-  // PROTECCIÓN GENENRAL
-  // =======================
   useEffect(() => {
     if (!user) {
       navigate("/login");
     }
   }, [user, navigate]);
 
-  // =======================
-  // CLIENT -> Pedidos
-  // =======================
+  // =========
+  // CLIENT
+  // =========
   useEffect(() => {
     if (!user || user.role !== "client") return;
 
@@ -56,6 +55,37 @@ export default function Profile() {
     };
 
     fetchOrders();
+  }, [user]);
+
+  useEffect(() => {
+    if (!user || user.role !== "seller") return;
+
+    const fetchSellerOrders = async () => {
+      setOrdersLoading(true);
+      try {
+        const res = await fetch("http://localhost:3000/api/seller/orders", {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.message || "Error al obtener pedidos");
+        }
+
+        setSellerOrders(data);
+      } catch (error) {
+        console.error(error);
+        toast.error("Error al cargar pedidos");
+        setSellerOrders([]);
+      } finally {
+        setSellerOrdersLoading(false);
+      }
+    };
+
+    fetchSellerOrders();
   }, [user]);
 
   if (!user) return <p>No has iniciado sesión</p>
@@ -114,15 +144,36 @@ export default function Profile() {
                   <td>#{order.id}</td>
                   <td>${order.total}</td>
                   <td>
-                    <span className={`badge ${
-                      order.status === "completed"
-                        ? "green"
-                        : order.status === "pending"
-                        ? "yellow"
-                        : "gray"
-                    }`}>
-                      {order.status}
-                    </span>
+                    {(() => {
+                      const status = typeof order.status === "string"
+                        ? order.status
+                        : order.status?.name;
+
+                      const getStatusBadge = (status) => {
+                        switch (status) {
+                          case "PENDING":
+                            return { text: "Pendiente", className: "yellow" };
+                          case "APPROVED":
+                            return { text: "Aprobado", className: "blue" };
+                          case "SHIPPED":
+                            return { text: "Enviado", className: "accent" };
+                          case "COMPLETED":
+                            return { text: "Completado", className: "green" };
+                          case "CANCELLED":
+                            return { text: "Cancelado", className: "red" };
+                          default:
+                            return { text: status, className: "gray" };
+                        }
+                      };
+
+                      const badge = getStatusBadge(status);
+
+                      return (
+                        <span className={`badge ${badge.className}`}> 
+                          {badge.text}
+                        </span>
+                      );
+                    })()}
                   </td>
                 </tr>
               ))}  
@@ -167,23 +218,68 @@ export default function Profile() {
             </button>
           </div>
 
-          <h5 className="mb-2">📦 Últimas publicaciones</h5>
+          <h5 className="text-secondary mb-2">📦 Últimos pedidos</h5>
 
-          {publications.length === 0 ? (
-            <p className="text-muted">No tienes publicaciones aún.</p>
+          {sellerOrderSloading ? (
+            <p className="text-muted">Cargando pedidos...</p>
+          ) : sellerOrders.length === 0 ? (
+            <p className="text-muted">No tienes pedidos aún</p>
           ) : (
-            <ul className="list">
-              {publications.slice(0, 3).map((pub) => (
-                <li key={pub.id} className="list-item">
-                  {pub.title} — {pub.date}
-                </li>
-              ))}
-            </ul>
+            <table className="text-secondary table table-sm mt-3">
+              <thead>
+                <tr>
+                  <th>Pedidos</th>
+                  <th>Cliente</th>
+                  <th>Total</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {sellerOrders.slice(0, 5).map(order => (
+                  <tr key={order.order_id}>
+                    <td>#{order.order_id}</td>
+                    <td>{order.client_name}</td>
+                    <td>${order.seller_total}</td>
+                    <td>
+                      {(() => {
+                        const status = typeof order.status === "string"
+                          ? order.status
+                          : order.status?.name;
+
+                        const getStatusBadge = (status) => {
+                          switch (status) {
+                            case "PENDING":
+                              return { text: "Pendiente", className: "yellow" };
+                            case "APPROVED":
+                              return { text: "Aprobado", className: "blue" };
+                            case "SHIPPED":
+                              return { text: "Enviado", className: "accent" };
+                            case "COMPLETED":
+                              return { text: "Completado", className: "green" };
+                            case "CANCELLED":
+                              return { text: "Cancelado", className: "red" };
+                            default:
+                              return { text: status, className: "gray" };
+                          }
+                        };
+
+                        const badge = getStatusBadge(status);
+
+                        return (
+                          <span className={`badge ${badge.className}`}> 
+                            {badge.text}
+                          </span>
+                        );
+                      })()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           )}
 
           <div className="d-flex justify-content-between mt-3">
-            <Link to="/my-publications" className="btn primary rounded-2 light mr-3">Ver todas</Link>
-            <Link to="/create-publications" className="btn secondary rounded-2">Crear publicación</Link>
+            <Link to="/seller-orders" className="btn primary rounded-2 light mt-3 full-width">Ver todos</Link>
           </div>
         </div>
       </div>
@@ -191,7 +287,7 @@ export default function Profile() {
   }
 
   // ------------------- ADMINISTRADOR -------------------
-  if (user.role === "Admin") {
+  if (user.role === "admin") {
     navigate("/dashboard");
     return null;
   }

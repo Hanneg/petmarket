@@ -87,6 +87,7 @@ export default function Navbar() {
                                 {user.role === "seller" && (
                                     <>
                                         <li><Link to="/profile">Mi Perfil</Link></li>
+                                        <li><Link to="/seller-orders">Pedidos</Link></li>
                                         <li><Link to="/my-publications">Mis Publicaciones</Link></li>
                                         <li><Link to="/create-publications">Crear Publicación</Link></li>
                                     </>

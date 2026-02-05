@@ -7,6 +7,7 @@ import usersRoutes from "./routes/users.routes.js";
 import categoriesRoutes from "./routes/categories.routes.js";
 import productsRoutes from "./routes/products.routes.js";
 import orderRoutes from "./routes/order.routes.js";
+import sellerRoutes from "./routes/seller.routes.js";
 
 const app = express();
 
@@ -19,5 +20,6 @@ app.use("/api/users", usersRoutes);
 app.use("/api/categories", categoriesRoutes);
 app.use("/api/products", productsRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/seller", sellerRoutes);
 
 export default app;

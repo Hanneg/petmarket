@@ -1,15 +1,45 @@
 import React, { useState, useEffect } from "react";
-import { mockProducts } from "../../utils/mockData";
+//import { mockProducts } from "../../../utils/mockData";
+import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export default function MyPublications() {
   const [publications, setPublications] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    setPublications(mockProducts);
-  }, []);
+    if (!user) return;
+
+    const fetchPublications = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch("http://localhost:3000/api/seller/publications", {
+          headers: {
+            Authorization: `Bearer ${user.token}`
+          }
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error( data.message || "Error al obtener publicaciones" );
+        }
+
+        setPublications(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error(error);
+        toast.error("Error al cargar publicaciones");
+        setPublications([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPublications();
+  }, [user]);
 
   const handleDelete = (id) => {
     setPublications(publications.filter((p) => p.id !== id));
@@ -30,8 +60,9 @@ export default function MyPublications() {
         </button>
       </div>
 
-      {/* Si no hay publicaciones */}
-      {publications.length === 0 ? (
+      {loading ? (
+        <p className="mt-3">Cargando publicaciones...</p>
+      ) : publications.length === 0 ? (
         <p className="mt-3">No tienes publicaciones activas 😿</p>
       ) : (
         <>
@@ -42,9 +73,11 @@ export default function MyPublications() {
                 <tr>
                   <th>Imagen</th>
                   <th>Nombre</th>
+                  <th>Descripción</th>
                   <th>Categoría</th>
                   <th>Precio</th>
-                  <th style={{ width: "240px" }}>Acciones</th>
+                  <th>Stock</th>
+                  <th style={{ width: "300px" }}>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -58,8 +91,10 @@ export default function MyPublications() {
                       />
                     </td>
                     <td>{product.name}</td>
+                    <td>{product.description}</td>
                     <td>{product.category}</td>
-                    <td>${product.price.toFixed(2)}</td>
+                    <td>${product.price}</td>
+                    <td>{product.stock}</td>
                     <td>
                       <div className="publications-table">
                         <button
@@ -97,9 +132,10 @@ export default function MyPublications() {
 
                 <div className="publication-card-body">
                   <h4>{product.name}</h4>
+                  <p className="description">{product.description}</p>
                   <p className="category">{product.category}</p>
-                  <p className="price">${product.price.toFixed(2)}</p>
-
+                  <p className="price">${product.price}</p>
+                  <p className="stock">Stock: {product.stock}</p>
                   <div className="publication-card-actions">
                     <button
                       className="btn small primary rounded-2"
