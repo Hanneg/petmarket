@@ -63,7 +63,7 @@ export default function Help() {
       </section>
 
       {/* Sección de Contacto / Soporte */}
-      <section className="mt-8">
+      <section className="mt-8 mb-4">
         <h4 className="text-accent mb-3 text-center">¿Necesitas más ayuda?</h4>
 
         <div className="grix xs1 sm2 align-center gutter-md">

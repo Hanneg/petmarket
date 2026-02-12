@@ -9,17 +9,21 @@ export const getSellerOrders = async (req, res) => {
         const result = await pool.query(
             `
             SELECT
+                oi.id AS order_item_id,
                 o.id AS order_id,
                 os.name AS status,
                 o.created_at,
                 u.name AS client_name,
-                SUM(oi.subtotal) AS seller_total
+                p.name AS product_name,
+                SUM(oi.subtotal) AS seller_total,
+                SUM(p.stock) AS total_stock
             FROM order_items oi
             JOIN orders o ON o.id = oi.order_id
             JOIN users u ON u.id = o.user_id
             JOIN order_status os ON os.id = o.status_id
+            JOIN products p ON p.id = oi.product_id
             WHERE oi.seller_id = $1
-            GROUP BY o.id, os.name, o.created_at, u.name
+            GROUP BY oi.id, o.id, os.name, o.created_at, u.name, p.stock, p.name
             ORDER BY o.created_at DESC
             `,
             [sellerId]

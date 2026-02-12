@@ -24,7 +24,7 @@ export default function Login() {
     };
 
     return (
-        <div className="container mt-5">
+        <div className="container mt-5 text-secondary">
             <div className="card p-4 mx-auto" style={{ maxWidth: 400}}>
                 <h3 className="text-center mb-3">Iniciar sesión</h3>
 
@@ -41,7 +41,7 @@ export default function Login() {
                         <p className="text-danger">{errors.password?.message}</p>
                     </div>
 
-                    <button type="submit" className="btn primary full-width mt-4">
+                    <button type="submit" className="btn primary full-width mt-2">
                         Ingresar
                     </button>
 

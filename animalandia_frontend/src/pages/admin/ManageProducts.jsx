@@ -1,46 +1,122 @@
 import React, { useEffect, useState } from "react";
-import { mockProducts } from "../../utils/mockData";
+import { useAuth } from "../../context/AuthContext";
+import { toast } from "react-toastify";
 
 export default function ManageProducts() {
   const [products, setProducts] = useState([]);
   const [viewProduct, setViewProduct] = useState(null);
   const [editProduct, setEditProduct] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
+  const [categories, setCategories] = useState([]);
 
-  // Cargar productos desde localStorage o usar mockProducts
-  useEffect(() => {
-    const stored = localStorage.getItem("products");
-    if (stored) {
-      setProducts(JSON.parse(stored));
-    } else {
-      setProducts(mockProducts);
-      localStorage.setItem("products", JSON.stringify(mockProducts));
+  const { user } = useAuth();
+
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/admin/products", {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
+
+      const data = await res.json();
+      setProducts(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error(error);
+      setProducts([]);
     }
-  }, []);
-
-  // Guardar cambios en localStorage
-  const saveProducts = (newProducts) => {
-    setProducts(newProducts);
-    localStorage.setItem("products", JSON.stringify(newProducts));
   };
 
-  const handleEditSave = () => {
-    const updated = products.map((p) =>
-      p.id === editProduct.id ? editProduct : p
-    );
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/categories", {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
 
-    saveProducts(updated);
-    setEditProduct(null);
+      const data = await res.json();
+      setCategories(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error(error);
+      setCategories([]);
+    }
   };
 
-  const handleDelete = () => {
-    const filtered = products.filter(p => p.id !== confirmDelete.id);
-    saveProducts(filtered);
-    setConfirmDelete(null);
+  useEffect(() => {
+    fetchProducts();
+    fetchCategories();
+  }, [user.token]);
+
+  const handleEditSave = async () => {
+    try {
+      const res = await fetch(`http://localhost:3000/api/admin/products/${editProduct.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`
+        },
+        body: JSON.stringify({
+          name: editProduct.name,
+          price: Number(editProduct.price),
+          stock: Number(editProduct.stock),
+          image_url: editProduct.image_url,
+          category_id: Number(editProduct.category_id),
+        }),
+      });
+
+      if (!res.ok) {
+        const error = await res.json();
+        toast.error(error.message || "Error al actualizar producto");
+        return;
+      }
+
+      await fetchProducts();
+
+      setEditProduct(null);
+      toast.success("Producto actualizado correctamente");
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al actualizar producto");
+    }
   };
+
+  const handleToggleStatus = async (product) => {
+    const newStatus = product.status === "active" ? "inactive" : "active";
+
+    try {
+      const res = await fetch(
+        `http://localhost:3000/api/admin/products/${product.id}/status`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+          body: JSON.stringify({ status: newStatus }),
+        }
+      );
+
+      if (!res.ok) {
+        toast.error("Error al cambiar estado");
+        return;
+      }
+
+      await fetchProducts();
+      toast.success(
+        newStatus === "active"
+          ? "Producto activado"
+          : "Producto desactivado"
+      );
+
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al cambiar estado");
+    }
+  }
 
   return (
-    <div className="manage-products-wrapper">
+    <div className="manage-products-wrapper text-secondary">
       <h3 className="mb-4">🛍️ Gestión de productos</h3>
       <div className="products-table-wrapper">
         <table className="table table-striped">
@@ -51,6 +127,8 @@ export default function ManageProducts() {
               <th>Nombre</th>
               <th>Categoría</th>
               <th>Precio</th>
+              <th>Vendedor</th>
+              <th>Estado</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -58,18 +136,27 @@ export default function ManageProducts() {
           <tbody>
             {products.map((p) => (
               <tr key={p.id}>
-                <td data-label="ID">{p.id}</td>
+                <td data-label="Id">{p.id}</td>
                 <td>
                   <img
-                    src={p.image}
+                    src={p.image_url}
                     alt={p.name}
                     style={{ width: 55, borderRadius: 6 }}
                   />
                 </td>
                 <td data-label="Nombre">{p.name}</td>
                 <td data-label="Categoría">{p.category}</td>
-                <td data-label="Precio">${p.price.toFixed(2)}</td>
-
+                <td data-label="Precio">${p.price}</td>
+                <td data-label="Vendedor">{p.seller}</td>
+                <td>
+                  <span
+                    className={`badge ${
+                      p.status === "active" ? "bg-success" : "bg-danger"
+                    }`}
+                  >
+                    {p.status}
+                  </span>
+                </td>
                 <td data-label="Acciones">
                   <button
                     className="btn primary btn-sm me-2 mr-1 rounded-2"
@@ -80,16 +167,26 @@ export default function ManageProducts() {
 
                   <button
                     className="btn secondary btn-sm me-2 mr-1 rounded-2"
-                    onClick={() => setEditProduct({ ...p })}
+                    onClick={() => {
+                      const categoryFound = categories.find(c => c.name === p.category);
+
+                      setEditProduct({
+                        ...p,
+                        image_url: p.image_url || "",
+                        category_id: categoryFound ? categoryFound.id : ""
+                      });
+                    }}
                   >
                     Editar
                   </button>
 
                   <button
-                    className="btn red btn-sm rounded-2"
-                    onClick={() => setConfirmDelete(p)}
+                    className={`btn btn-sm rounded-2 ${
+                      p.status === "active" ? "red" : "primary"
+                    }`}
+                    onClick={() => handleToggleStatus(p)}
                   >
-                    Eliminar
+                    {p.status === "active" ? "Desactivar" : "Activar"}
                   </button>
                 </td>
               </tr>
@@ -103,14 +200,15 @@ export default function ManageProducts() {
             <div className="modal-box">
               <h4>📦 Producto</h4>
               <img
-                src={viewProduct.image}
+                src={viewProduct.image_url}
                 alt={viewProduct.name}
                 style={{ width: 150, borderRadius: 8 }}
               />
-              <p><b>Nombre:</b> {viewProduct.name}</p>
-              <p><b>Categoría:</b> {viewProduct.category}</p>
-              <p><b>Precio:</b> ${viewProduct.price}</p>
-
+              <p><b>Nombre: </b> {viewProduct.name}</p>
+              <p><b>Stock: </b> {viewProduct.stock}</p>
+              <p><b>Categoría: </b> {viewProduct.category}</p>
+              <p><b>Precio: </b> ${viewProduct.price}</p>
+              <p><b>Vendedor: </b>{viewProduct.seller}</p>
               <button
                 className="btn accent mt-3 rounded-2"
                 onClick={() => setViewProduct(null)}
@@ -129,57 +227,46 @@ export default function ManageProducts() {
 
               <label>Nombre</label>
               <input
-                className="form-control"
+                className="form-control mb-2"
                 value={editProduct.name}
                 onChange={(e) =>
                   setEditProduct({ ...editProduct, name: e.target.value })
                 }
               />
 
-              <label className="mt-2">Categoría</label>
-              <input
-                className="form-control"
-                value={editProduct.category}
+              <label>Categoría:</label>
+              <select
+                className="form-control mb-2"
+                value={editProduct.category_id || ""}
                 onChange={(e) =>
-                  setEditProduct({ ...editProduct, category: e.target.value })
+                  setEditProduct({ ...editProduct, category_id: Number(e.target.value) })
                 }
-              />
+              >
+                <option value="">Selecciona categoría</option>
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+                ))}
+              </select>
 
-              <label className="mt-2">Precio</label>
+              <label>Imagen (URL)</label>
               <input
-                type="number"
+                type="text"
                 className="form-control"
-                value={editProduct.price}
+                value={editProduct.image_url || ""}
                 onChange={(e) =>
                   setEditProduct({
                     ...editProduct,
-                    price: Number(e.target.value),
+                    image_url: e.target.value,
                   })
                 }
-              />
-
-              <label className="mt-2">Imagen (URL)</label>
-              <input
-                type="file"
-                className="form-control"
-                accept="image/*"
-                onChange={(e) => {
-                  const file = e.target.files[0]; // Tomamos el primer archivo
-                  if (file) {
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
-                      // Guardamos la imagen en base64
-                      setEditProduct({ ...editProduct, image: reader.result });
-                    };
-                    reader.readAsDataURL(file);
-                  }
-                }}
               />
 
               {/* Previsualización */}
               {editProduct.image && (
                 <img
-                  src={editProduct.image}
+                  src={editProduct.image_url}
                   alt="preview"
                   style={{ width: 120, marginTop: 10, borderRadius: 8 }}
                 />
@@ -195,29 +282,6 @@ export default function ManageProducts() {
                   Cancelar
                 </button>
               </div>
-            </div>
-          </div>
-        )}
-
-        {/* ---------- ELIMINAR PRODUCTO ---------- */}
-        {confirmDelete && (
-          <div className="modal-overlay">
-            <div className="modal-box">
-              <h4>❗Eliminar producto</h4>
-              <p>
-                ¿Seguro que deseas eliminar <b>{confirmDelete.name}</b>?
-              </p>
-
-              <button className="btn red me-2 mr-2 rounded-2" onClick={handleDelete}>
-                Eliminar
-              </button>
-
-              <button
-                className="btn accent rounded-2"
-                onClick={() => setConfirmDelete(null)}
-              >
-                Cancelar
-              </button>
             </div>
           </div>
         )}

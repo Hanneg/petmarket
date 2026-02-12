@@ -1,25 +1,12 @@
 import { Router } from "express";
 import { 
-    createUser, 
     getUserById, 
     updateUser, 
     changePassword, 
-    getAllUsers,
-    adminUpdateUser,
-    deleteUser } from "../controllers/users.controller.js";
-import { verifyToken, isAdmin } from "../middlewares/auth.middleware.js";
+} from "../controllers/users.controller.js";
+import { verifyToken } from "../middlewares/auth.middleware.js";
 
 const router = Router();
-
-// ADMIN
-// Enliste todos los usuarios
-router.get("/", verifyToken, isAdmin, getAllUsers);
-// Crear usuario
-router.post("/", verifyToken, isAdmin, createUser);
-// Edita usuario
-router.put("/admin/:id", verifyToken, isAdmin, adminUpdateUser);
-// Eliminar usuario
-router.delete("/:id", verifyToken, isAdmin, deleteUser);
 
 // USER
 // Obtener datos del usuario (autenticado)

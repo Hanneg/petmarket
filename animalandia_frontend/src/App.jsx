@@ -6,7 +6,6 @@ import AppRouter from './routes/AppRouter';
 import { ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
-// Contextos
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
  

@@ -4,7 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const [open, setOpen] = useState(false); // <-- estado sidebar móvil
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="admin-dashboard">

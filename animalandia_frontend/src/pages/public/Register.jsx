@@ -48,7 +48,7 @@ export default function Register() {
     };
 
     return (
-        <div className="container mt-5">
+        <div className="container mt-5 text-secondary">
             <div className="card p-4 mx-auto" style={{ maxWidth: 400}}>
                 <h3 className="text-center mb-3">Registrate</h3>
 
@@ -87,7 +87,7 @@ export default function Register() {
                         <p className="text-danger">{errors.role?.message}</p>
                     </div>
 
-                    <button type="submit" className="btn secondary full-width mt-4">
+                    <button type="submit" className="btn primary full-width mt-4">
                         Crear cuenta
                     </button>
 

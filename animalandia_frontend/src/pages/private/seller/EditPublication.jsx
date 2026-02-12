@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-//import { mockProducts } from "../../../utils/mockData";
 import { useAuth } from "../../../context/AuthContext";
 import { toast } from "react-toastify";
 
@@ -117,7 +116,7 @@ export default function EditPublication() {
   if (!product) return <p className="text-center mt-5">Cargando...</p>;
 
   return (
-    <div className="container mt-5" style={{ maxWidth: "600px" }}>
+    <div className="container mt-5 text-secondary" style={{ maxWidth: "600px" }}>
       <div className="card p-4">
         <h3 className="text-secondary mb-4">✏️ Editar publicación</h3>
 
@@ -202,7 +201,7 @@ export default function EditPublication() {
             <button
                 type="button"
                 className="btn secondary w-100 rounded-2"
-                onClick={() => navigate("/view-publication/" + id)}
+                onClick={() => navigate("/my-publications")}
             >
                 Cancelar
             </button>

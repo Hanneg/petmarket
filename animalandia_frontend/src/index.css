@@ -23,6 +23,7 @@ html, body {
   font-family: 'Poppins', sans-serif;
   height: 100%;
   margin: 0;
+  overflow-x: hidden;
 }
 
 .app-wrapper {
@@ -283,14 +284,14 @@ html, body {
 
 .product-title {
   display: -webkit-box;
-  -webkit-line-clamp: 2;      /* máximo 2 líneas */
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
 
   line-height: 1.3rem;
-  height: 2.6rem;             /* 2 líneas fijas */
-  font-size: 1.2rem;            /* line-height × líneas */
+  height: 2.6rem;
+  font-size: 1.2rem;
 }
 
 .product-card {
@@ -463,11 +464,9 @@ html, body {
   display: none;
 }
 
-/* Ocultar en escritorio */
 .hide-mobile { display: flex; }
 .hide-desktop { display: none; }
 
-/* Menú móvil */
 .mobile-menu {
   position: absolute;
   top: 60px;
@@ -520,6 +519,7 @@ html, body {
 /* =================== */
 /* MIS PUBLICACIONES   */
 /* =================== */
+
 .publication-header {
   display: flex;
   justify-content: space-between;
@@ -601,8 +601,6 @@ html, body {
 }
 
 @media (max-width: 768px) {
-
-  /* Tabla solo en desktop */
   .hide-mobile {
     display: none !important;
   }
@@ -633,9 +631,55 @@ html, body {
   }
 }
 
+/* ===================== */
+/* DASHBOARD ADMIN FIX   */
+/* ===================== */
+
+.dashboard-wrapper {
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+
+.dashboard-card {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  height: 350px;
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-card canvas {
+  flex: 1;
+  max-height: 250px !important;
+}
+
+.full-width {
+  grid-column: span 2;
+}
+
+@media (max-width: 992px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .full-width {
+    grid-column: span 1;
+  }
+}
+
 /* =================== */
 /* SIDEBAR             */
 /* =================== */
+
 .admin-dashboard {
   display: flex;
   flex: 1;
@@ -729,14 +773,14 @@ html, body {
 }
 
 /* ============== */
-/* ADMINISTRACIÓN */
+/* ADMIN          */
 /* ============== */
 
 .admin-content {
   flex: 1;
   padding: 0;
   margin: 0;
-  width: 100%;      
+  min-width: 0;      
 }
 
 .modal-overlay {
@@ -805,19 +849,18 @@ html, body {
   padding: 10px;
 }
 
-/* ======== RESPONSIVE PARA MANAGE USERS ======== */
+/* ============================== */
+/* RESPONSIVE PARA MANAGE USERS   */
+/* ============================== */
 
-/* --- En móvil, convertir tabla en tarjetas verticales --- */
 @media (max-width: 768px) {
-  
-  /* Quitar tabla tradicional */
   table.table {
     display: block;
     width: 100%;
   }
 
   table.table thead {
-    display: none; /* oculta encabezados */
+    display: none;
   }
 
   table.table tbody {
@@ -842,14 +885,12 @@ html, body {
     border: none;
   }
 
-  /* Etiquetas automáticas */
   table.table tbody td::before {
     content: attr(data-label);
     font-weight: bold;
     margin-right: 10px;
   }
 
-  /* Contenedor de botones más limpio */
   table.table td:last-child {
     flex-direction: column;
     gap: 6px;
@@ -859,7 +900,6 @@ html, body {
     width: 100%;
   }
 
-  /* Wrapper ajustado para móvil */
   .manage-users-wrapper {
     padding: 10px;
   }
@@ -869,7 +909,6 @@ html, body {
     overflow: visible;
   }
 
-  /* Modal adaptado a móvil */
   .modal-box {
     width: 95%;
     max-width: 95%;
@@ -914,9 +953,10 @@ html, body {
     opacity: 0.9;
 }
 
-/* -------------- */
+/* ============== */
 /* MÓVIL / TABLET */
-/* -------------- */
+/* ============== */
+
 @media (max-width: 768px) {
     .footer-container {
         flex-direction: column;
@@ -943,7 +983,6 @@ html, body {
     border-radius: 12px;
 }
 
-/* Grid principal */
 .viewpub-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -951,7 +990,6 @@ html, body {
     align-items: start;
 }
 
-/* Imagen */
 .viewpub-image-wrapper {
     width: 100%;
     height: 350px;
@@ -966,7 +1004,6 @@ html, body {
     object-fit: cover;
 }
 
-/* Información */
 .viewpub-info .price {
     color: var(--secondary);
     font-weight: bold;
@@ -977,7 +1014,6 @@ html, body {
     font-size: 1rem;
 }
 
-/* Botones */
 .viewpub-actions {
     margin-top: 25px;
     display: flex;
@@ -990,18 +1026,17 @@ html, body {
 @media (max-width: 768px) {
 
     .viewpub-grid {
-        grid-template-columns: 1fr; /* 👉 Se vuelve una sola columna */
+        grid-template-columns: 1fr;
     }
 
     .viewpub-image-wrapper {
-        height: 260px; /* más compacto */
+        height: 260px;
     }
 
     .viewpub-info {
         text-align: center;
     }
 
-    /* Botones apilados */
     .viewpub-actions {
         flex-direction: column;
     }

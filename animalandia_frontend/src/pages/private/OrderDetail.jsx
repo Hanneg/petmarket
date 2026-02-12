@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-//import { getMockOrders } from "../../utils/mockData";
 import { AuthContext } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 
@@ -19,9 +18,6 @@ export default function OrderDetail() {
     }
   }, [user, navigate]);
 
-  // =====================
-  // FETCH DETALLE PEDIDO
-  // =====================
   useEffect(() => {
     if (!user || user.role !== "client") return;
 

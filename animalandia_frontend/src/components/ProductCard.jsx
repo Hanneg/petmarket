@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 export default function ProductCard({ product }) {
     const navigate = useNavigate();
     const { addToCart } = useCart();
-    const { isAuthenticated } = useAuth(); // Para saber si el usuario esta logueado
+    const { isAuthenticated, user } = useAuth();
 
     const handleAddToCart = () => {
         if (!isAuthenticated) {
@@ -32,6 +32,7 @@ export default function ProductCard({ product }) {
 
             <div className="card-body">
                 <h6 className="product-title mb-1 text-secondary">{product.name}</h6>
+                <p className="text-accent" >{product.category}</p>
                 <p className="product-description text-secondary" >{product.description}</p>
                 <p className="product-price text-muted mb-1 text-accent font-w800">${product.price}</p>
             </div>
@@ -40,9 +41,11 @@ export default function ProductCard({ product }) {
                 <button className="btn small primary mr-2 rounded-2" onClick={() => navigate(`/product/${product.id}`)}>
                     Ver más
                 </button>
-                <button className="btn small secondary rounded-2" onClick={handleAddToCart}>
-                    Agregar
-                </button>
+                {user?.role !== "seller" && user?.role !== "admin" && product.status === "active" && (
+                    <button className="btn small secondary rounded-2" onClick={handleAddToCart}>
+                        Agregar
+                    </button>
+                )}
             </div>
         </div>
     );

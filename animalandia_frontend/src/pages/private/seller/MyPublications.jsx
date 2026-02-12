@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-//import { mockProducts } from "../../../utils/mockData";
 import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -47,7 +46,7 @@ export default function MyPublications() {
   };
 
   return (
-    <div className="container mt-5 mb-5" style={{ maxWidth: "1000px" }}>
+    <div className="container mt-5 mb-5 text-secondary" style={{ maxWidth: "1000px" }}>
       
       {/* Header */}
       <div className="publication-header">
@@ -77,6 +76,7 @@ export default function MyPublications() {
                   <th>Categoría</th>
                   <th>Precio</th>
                   <th>Stock</th>
+                  <th>Status</th>
                   <th style={{ width: "300px" }}>Acciones</th>
                 </tr>
               </thead>
@@ -95,27 +95,33 @@ export default function MyPublications() {
                     <td>{product.category}</td>
                     <td>${product.price}</td>
                     <td>{product.stock}</td>
+                    <td>{product.status}</td>
                     <td>
-                      <div className="publications-table">
-                        <button
-                          className="btn small primary rounded-2 mr-1"
-                          onClick={() => navigate(`/view-publication/${product.id}`)}
-                        >
-                          Ver
-                        </button>
-                        <button
-                          className="btn small secondary rounded-2 mr-1"
-                          onClick={() => navigate(`/edit-publication/${product.id}`)}
-                        >
-                          Editar
-                        </button>
-                        <button
-                          className="btn small red rounded-2"
-                          onClick={() => handleDelete(product.id)}
-                        >
-                          Eliminar
-                        </button>
-                      </div>
+                      {product.status === "active" ? (
+                        <div className="publications-table">
+                          <button
+                            className="btn small primary rounded-2 mr-1"
+                            onClick={() => navigate(`/view-publication/${product.id}`)}
+                          >
+                            Ver
+                          </button>
+                          <button
+                            className="btn small secondary rounded-2 mr-1"
+                            onClick={() => navigate(`/edit-publication/${product.id}`)}
+                          >
+                            Editar
+                          </button>
+                          <button
+                            className="btn small red rounded-2"
+                            onClick={() => handleDelete(product.id)}
+                          >
+                            Eliminar
+                          </button>
+                        </div>
+                      ) : (
+                        <span className="text-gray">Producto inactivo</span>
+                      )}
+                      
                     </td>
                   </tr>
                 ))}

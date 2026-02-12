@@ -154,6 +154,8 @@ export default function SellerOrders() {
                                 <th>Pedidos</th>
                                 <th>Fecha</th>
                                 <th>Cliente</th>
+                                <th>Stock</th>
+                                <th>Pedido</th>
                                 <th>Total</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
@@ -161,10 +163,12 @@ export default function SellerOrders() {
                         </thead>
                         <tbody>
                             {orders.map(order => (
-                                <tr key={order.order_id}>
+                                <tr key={order.order_item_id}>
                                     <td>#{order.order_id}</td>
                                     <td>{new Date(order.created_at).toLocaleDateString()}</td>
                                     <td>{order.client_name}</td>
+                                    <td>{order.total_stock}</td>
+                                    <td>{order.product_name}</td>
                                     <td>${order.seller_total}</td>
                                     <td>
                                         {(() => {

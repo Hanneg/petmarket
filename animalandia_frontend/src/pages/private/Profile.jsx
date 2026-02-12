@@ -22,9 +22,6 @@ export default function Profile() {
     }
   }, [user, navigate]);
 
-  // =========
-  // CLIENT
-  // =========
   useEffect(() => {
     if (!user || user.role !== "client") return;
 
@@ -93,7 +90,7 @@ export default function Profile() {
   // Cliente
   if (user?.role === "client") {
     return (
-      <div className="container mt-5">
+      <div className="container mt-5 text-secondary">
         <h3 className="text-center mb-4">👤 Mi Perfil</h3>
 
         <div className="card p-4 mx-auto" style={{ maxWidth: 600 }}>
@@ -191,7 +188,7 @@ export default function Profile() {
   // Vendedor
   if (user.role === "seller") {
     return (
-      <div className="container mt-5">
+      <div className="container mt-5 text-secondary">
         <h3 className="text-center mb-4">👤 Mi Perfil</h3>
 
         <div className="card p-4 mx-auto" style={{ maxWidth: 650 }}>
@@ -286,7 +283,7 @@ export default function Profile() {
     );
   }
 
-  // ------------------- ADMINISTRADOR -------------------
+  // Admin
   if (user.role === "admin") {
     navigate("/dashboard");
     return null;

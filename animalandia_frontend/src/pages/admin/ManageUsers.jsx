@@ -37,7 +37,7 @@ export default function ManageUsers() {
     const fetchUsers = async () => {
       if (!user || !user.token) return;
       try {
-        const response = await axios.get("http://localhost:3000/api/users", {
+        const response = await axios.get("http://localhost:3000/api/admin/users", {
           headers: {
             Authorization: `Bearer ${user.token}`,
           },
@@ -57,7 +57,7 @@ export default function ManageUsers() {
   const handleDelete = async () => {
     try {
       await axios.delete(
-        `http://localhost:3000/api/users/${selectedUser.id}`,
+        `http://localhost:3000/api/admin/users/${selectedUser.id}`,
         {
           headers: {
             Authorization: `Bearer ${user.token}`,
@@ -81,7 +81,7 @@ export default function ManageUsers() {
   const handleEditUser = async () => {
     try {
       const res = await axios.put(
-        `http://localhost:3000/api/users/admin/${selectedUser.id}`,
+        `http://localhost:3000/api/admin/users/${selectedUser.id}`,
         editform,
         {
           headers: {
@@ -104,7 +104,7 @@ export default function ManageUsers() {
   };
 
   return (
-    <div className="manage-users-wrapper">
+    <div className="manage-users-wrapper text-secondary">
 
       <h3 className="mb-4">👥 Gestión de usuarios</h3>
       <button className="btn primary mb-3 rounded-2"
@@ -272,7 +272,7 @@ export default function ManageUsers() {
 
                 try {
                   const res = await axios.post(
-                    "http://localhost:3000/api/users",
+                    "http://localhost:3000/api/admin/users",
                     { name, email, password, role },
                     { headers: { Authorization: `Bearer ${user.token}` } }
                   );

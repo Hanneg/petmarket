@@ -10,7 +10,7 @@ export default function ProductDetail() {
   const navigate = useNavigate();
 
   const { addToCart } = useCart();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   const [product, setProduct] = useState(null);
   const [related, setRelated] = useState([]);
@@ -96,7 +96,7 @@ export default function ProductDetail() {
           <p className="text-accent text-sm mb-2">
             <i className="fas fa-tag me-1"></i> {product.category}
           </p>
-          <p className="text-flow mb-3">{product.description}</p>
+          <p className="text-secondary mb-3">{product.description}</p>
 
           <h3 className="text-primary fw-bold mb-4">
             ${product.price}
@@ -125,14 +125,16 @@ export default function ProductDetail() {
           </div>          
 
           <div className="d-flex flex-wrap gap-2 mt-4">
-            <button
-              className="btn btn-primary secondary rounded-2 mr-2"
-              onClick={handleAddToCart}
-              disabled={product.stock === 0}
-            >
-              <i className="fas fa-cart-plus me-1 text-background"></i>
-              Agregar al carrito
-            </button>
+            {user?.role !== "seller" && user?.role !== "admin" && product.status === "active" && (
+              <button
+                className="btn btn-primary secondary rounded-2 mr-2"
+                onClick={handleAddToCart}
+                disabled={product.stock === 0}
+              >
+                <i className="fas fa-cart-plus me-1 text-background"></i>
+                  Agregar al carrito
+              </button>
+            )}
 
             <button
               className="btn btn-outline-primary primary rounded-2"

@@ -23,7 +23,6 @@ export default function Home() {
       const res = await fetch("http://localhost:3000/api/categories");
       const data = await res.json();
 
-      // Mezclar backend + imágenes
       const withImages = data.map((cat) => ({
         ...cat,
         image: categoryImages[cat.name] || "/src/assets/images/default.jpg",

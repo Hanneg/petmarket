@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -13,10 +13,9 @@ export default function Catalog() {
   const [search, setSearch] = useState("");
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState("Todos");
-
   
   const { addToCart } = useCart();
-  const { isAuthenticated } = useAuth(); // Para saber si el usuario esta logueado
+  const { isAuthenticated, user } = useAuth();
 
   // Leer categoría desde query params al cargar la página
   useEffect(() => {
@@ -146,6 +145,7 @@ export default function Catalog() {
               </div>
               <div className="card-body">
                 <h5 className="product-title mt-2 text-secondary">{product.name}</h5>
+                <p className="text-small text-primary">{product.category}</p>
                 <p className="product-price mb-1 grey-text text-accent font-w800">Precio: ${product.price}</p>
                 <p className="product-description text-small text-secondary">{product.description}</p>
               </div>
@@ -153,9 +153,11 @@ export default function Catalog() {
                 <button className="btn primary mr-2 rounded-2 text-background" onClick={() => navigate(`/product/${product.id}`)}>
                   Ver más
                 </button>
-                <button className="btn secondary rounded-2 text-background" onClick={() => handleAddToCart(product)}>
-                  Agregar
-                </button>
+                {user?.role !== "seller" && user?.role !== "admin" && product.status === "active" && (
+                  <button className="btn secondary rounded-2 text-background" onClick={() => handleAddToCart(product)}>
+                    Agregar
+                  </button>
+                )}
               </div>
             </div>
           ))
