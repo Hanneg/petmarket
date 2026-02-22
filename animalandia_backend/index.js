@@ -12,7 +12,7 @@ const startServer = async () => {
 
         // Levantar servidor
         app.listen(PORT, () => {
-            console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+            console.log(`🚀 Servidor corriendo en puerto ${PORT}`);
         });
     } catch (error) {
         console.error("❌ Error iniciando servidor:", error);

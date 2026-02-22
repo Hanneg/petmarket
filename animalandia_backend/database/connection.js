@@ -2,19 +2,15 @@ import pkg from "pg";
 import "dotenv/config";
 const { Pool } = pkg;
 
+const isProduction = process.env.NODE_ENV === "production";
+
 // Configuración de postgres
 export const pool = new Pool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-    port: process.env.DB_PORT,
-    allowExitOnIdle: true
+    connectionString: process.env.DATABASE_URL,
+    ssl: isProduction
+        ? { rejectUnauthorized: false }
+        : false,
 });
 
-try {
-    await pool.query("SELECT NOW()");
-    console.log("Database connected");
-} catch (error) {
-    console.log(error)
-}
+console.log("NODE_ENV:", process.env.NODE_ENV);
+console.log("isProduction:", isProduction);
