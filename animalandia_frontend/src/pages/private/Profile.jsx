@@ -29,7 +29,7 @@ export default function Profile() {
       setOrdersLoading(true);
 
       try {
-        const res = await fetch("http://localhost:3000/api/orders", {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/orders`, {
           headers: {
             Authorization: `Bearer ${user.token}`
           },
@@ -60,7 +60,7 @@ export default function Profile() {
     const fetchSellerOrders = async () => {
       setOrdersLoading(true);
       try {
-        const res = await fetch("http://localhost:3000/api/seller/orders", {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/seller/orders`, {
           headers: {
             Authorization: `Bearer ${user.token}`,
           },

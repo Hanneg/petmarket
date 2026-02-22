@@ -39,7 +39,7 @@ export default function EditProfile() {
       }
 
       const response = await axios.put(
-        `http://localhost:3000/api/users/${user.id}`,
+        `${import.meta.env.VITE_API_URL}/api/users/${user.id}`,
         formData,
         {
           headers: {

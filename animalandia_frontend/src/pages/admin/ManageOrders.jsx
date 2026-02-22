@@ -16,7 +16,7 @@ export default function ManageOrders() {
     const fetchOrders = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3000/api/admin/orders?page=${page}&limit=10`,
+          `${import.meta.env.VITE_API_URL}/api/admin/orders?page=${page}&limit=10`,
           {
             headers: {
               Authorization: `Bearer ${user.token}`,
@@ -38,7 +38,7 @@ export default function ManageOrders() {
   const handleEditSave = async () => {
     try {
       const res = await fetch(
-        `http://localhost:3000/api/admin/orders/${editOrder.id}`,
+        `${import.meta.env.VITE_API_URL}/api/admin/orders/${editOrder.id}`,
         {
           method: "PATCH",
           headers: {
@@ -67,7 +67,7 @@ export default function ManageOrders() {
   const handleDelete = async () => {
     try {
       const res = await fetch(
-        `http://localhost:3000/api/admin/orders/${confirmDelete.id}`,
+        `${import.meta.env.VITE_API_URL}/api/admin/orders/${confirmDelete.id}`,
         {
           method: "DELETE",
           headers: {

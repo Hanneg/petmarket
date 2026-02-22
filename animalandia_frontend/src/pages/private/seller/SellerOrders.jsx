@@ -19,7 +19,7 @@ export default function SellerOrders() {
         const fetchSellerOrders = async () => {
             setLoading(true);
             try {
-                const res = await fetch("http://localhost:3000/api/seller/orders", {
+                const res = await fetch(`${import.meta.env.VITE_API_URL}/api/seller/orders`, {
                     headers: {
                         Authorization: `Bearer ${user.token}`,
                     },
@@ -47,7 +47,7 @@ export default function SellerOrders() {
     const approveOrder = async (orderId) => {
         try {
             const res = await fetch(
-                `http://localhost:3000/api/seller/orders/${orderId}/approve`,
+                `${import.meta.env.VITE_API_URL}/api/seller/orders/${orderId}/approve`,
                 {
                     method: "PATCH",
                     headers: {
@@ -76,7 +76,7 @@ export default function SellerOrders() {
     const shipOrder = async (orderId) => {
         try {
             const res = await fetch(
-                `http://localhost:3000/api/seller/orders/${orderId}/ship`,
+                `${import.meta.env.VITE_API_URL}/api/seller/orders/${orderId}/ship`,
                 {
                     method: "PATCH",
                     headers: {
@@ -108,7 +108,7 @@ export default function SellerOrders() {
 
         try {
             const res = await fetch(
-                `http://localhost:3000/api/seller/orders/${orderId}/cancel`,
+                `${import.meta.env.VITE_API_URL}/api/seller/orders/${orderId}/cancel`,
                 {
                     method: "PATCH",
                     headers: {

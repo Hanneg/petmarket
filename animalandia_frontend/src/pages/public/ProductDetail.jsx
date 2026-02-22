@@ -30,14 +30,14 @@ export default function ProductDetail() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/products/${id}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/products/${id}`);
         if (!res.ok) throw new Error("Producto no encontrado");
 
         const data = await res.json();
         setProduct(data);
 
         // Obtener relacionados (misma categoría)
-        const relRes = await fetch("http://localhost:3000/api/products");
+        const relRes = await fetch(`${import.meta.env.VITE_API_URL}/api/products`);
         const allProducts = await relRes.json();
 
         const filtered = allProducts.filter(

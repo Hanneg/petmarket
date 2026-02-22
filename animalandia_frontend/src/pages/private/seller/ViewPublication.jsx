@@ -13,7 +13,7 @@ export default function ViewPublication() {
   useEffect(() => {
     const fetchPublication = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/seller/publications/${id}`, 
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/seller/publications/${id}`, 
           {
             headers: {
               Authorization: `Bearer ${user.token}`,

@@ -15,7 +15,7 @@ export default function MyPublications() {
     const fetchPublications = async () => {
       setLoading(true);
       try {
-        const res = await fetch("http://localhost:3000/api/seller/publications", {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/seller/publications`, {
           headers: {
             Authorization: `Bearer ${user.token}`
           }

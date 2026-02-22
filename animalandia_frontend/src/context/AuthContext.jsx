@@ -3,13 +3,11 @@ import { toast } from "react-toastify";
 
 export const AuthContext = createContext();
 
-const API_URL = "http://localhost:3000/api";
-
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // Cargar sesión
+    // CARGAR SESIÓN
     useEffect(() => {
         const storedUser = localStorage.getItem("user");
 
@@ -19,10 +17,10 @@ export function AuthProvider({ children }) {
         setLoading(false);
     }, []);
 
-    // Iniciar sesión
+    // INICIAR SESIÓN
     const login = async (email, password) => {
         try {
-            const res = await fetch(`${API_URL}/auth/login`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password })
@@ -39,7 +37,7 @@ export function AuthProvider({ children }) {
 
             const data = await res.json();
             
-            // Usuario + token unificado
+            // USUARIO + TOKEN UNIFICADO
             const userWithToken = {
                 id: data.user.id,
                 name: data.user.name,
@@ -61,14 +59,14 @@ export function AuthProvider({ children }) {
         }
     };
 
-    // Cerrar sesión
+    // CERRAR SESIÓN
     const logout = () => {
         setUser(null);
         localStorage.clear();
         toast.info("Sesión cerrada");
     };
 
-    const isAuthenticated = !!user; // Identificador 
+    const isAuthenticated = !!user;
 
     return (
         <AuthContext.Provider value={{ 

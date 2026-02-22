@@ -13,7 +13,7 @@ export default function ManageProducts() {
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/admin/products", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/products`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
@@ -29,7 +29,7 @@ export default function ManageProducts() {
 
   const fetchCategories = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/categories", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/categories`, {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
@@ -50,7 +50,7 @@ export default function ManageProducts() {
 
   const handleEditSave = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/api/admin/products/${editProduct.id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/products/${editProduct.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -86,7 +86,7 @@ export default function ManageProducts() {
 
     try {
       const res = await fetch(
-        `http://localhost:3000/api/admin/products/${product.id}/status`,
+        `${import.meta.env.VITE_API_URL}/api/admin/products/${product.id}/status`,
         {
           method: "PUT",
           headers: {

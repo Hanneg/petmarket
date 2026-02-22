@@ -25,7 +25,7 @@ export default function OrderDetail() {
       setLoading(true);
 
       try {
-        const res = await fetch(`http://localhost:3000/api/orders/${id}`, {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/orders/${id}`, {
           headers: {
             Authorization: `Bearer ${user.token}`,
           },
@@ -90,7 +90,7 @@ export default function OrderDetail() {
 
     try {
       const res = await fetch(
-        `http://localhost:3000/api/orders/${order.id}/cancel`,
+        `${import.meta.env.VITE_API_URL}/api/orders/${order.id}/cancel`,
         {
           method: "PATCH",
           headers: {
@@ -116,7 +116,7 @@ export default function OrderDetail() {
   const handleCompleteOrder = async () => {
     try {
       const res = await fetch(
-        `http://localhost:3000/api/orders/${order.id}/complete`,
+        `${import.meta.env.VITE_API_URL}/api/orders/${order.id}/complete`,
         {
           method: "PATCH",
           headers: {

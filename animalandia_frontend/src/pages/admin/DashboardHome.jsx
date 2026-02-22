@@ -75,7 +75,7 @@ export default function DashboardHome() {
       try {
         const responses = await Promise.all(
           endpoints.map((endpoint) => 
-            fetch(`http://localhost:3000/api/admin/dashboard/${endpoint}`, {
+            fetch(`${import.meta.env.VITE_API_URL}/${endpoint}`, {
               headers,
             }).then((res) => res.json())
           )

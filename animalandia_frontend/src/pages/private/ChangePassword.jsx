@@ -44,7 +44,7 @@ export default function ChangePassword() {
 
     try {
       await axios.put(
-        `http://localhost:3000/api/users/${user.id}/change-password`,
+        `${import.meta.env.VITE_API_URL}/api/users/${user.id}/change-password`,
         {
           currentPassword: formData.currentPassword,
           newPassword: formData.newPassword

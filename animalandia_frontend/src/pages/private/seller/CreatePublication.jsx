@@ -40,7 +40,7 @@ export default function CreatePublication() {
 
       }
       
-      const res = await fetch("http://localhost:3000/api/seller/products", {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/seller/products`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
