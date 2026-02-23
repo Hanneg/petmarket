@@ -16,11 +16,11 @@ export default function Home() {
   const [featured, setFeatured] = useState([]);
 
   const categoryImages = {
-    Accesorios: categoria_accesorios,
-    perros: categorias_perros,
-    gatos: categorias_gatos,
-    "Otros animalitos": categoria_otros,
-    Comida: categoria_comida,
+    Accesorios: {categoria_accesorios},
+    perros: {categorias_perros},
+    gatos: {categorias_gatos},
+    "Otros animalitos": {categoria_otros},
+    Comida: {categoria_comida},
   }
 
   useEffect(() => {
