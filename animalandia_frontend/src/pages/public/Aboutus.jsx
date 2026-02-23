@@ -1,4 +1,5 @@
 import React from "react";
+import gato_image from "../../assets/images/categoria_gato.jpg";
 
 export default function AboutUs() {
   return (
@@ -52,7 +53,7 @@ export default function AboutUs() {
         <div className="grix xs1 md2 align-center gutter-md">
           <div className="col order-md2 center-align">
             <img
-              src="/src/assets/images/categoria_gato.jpg"
+              src={gato_image}
               alt="Equipo de AnimaLandia"
               className="responsive radius-3 shadow-2"
               style={{ maxWidth: "100%", height: "auto", display: "block", margin: "0 auto" }}

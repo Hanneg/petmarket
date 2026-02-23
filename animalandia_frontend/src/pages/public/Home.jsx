@@ -2,6 +2,11 @@ import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CategoryCard from "../../components/CategoryCard";
 import ProductCard from "../../components/ProductCard";
+import categoria_accesorios from "../../assets/images/categoria_accesorios.jpg";
+import categorias_perros from "../../assets/images/categoria_perros.jpg";
+import categorias_gatos from "../../assets/images/categoria_gato.jpg";
+import categoria_otros from "../../assets/images/categoria_higiene.jpg";
+import categoria_comida from "../../assets/images/categoria_comida.jpg";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -11,11 +16,11 @@ export default function Home() {
   const [featured, setFeatured] = useState([]);
 
   const categoryImages = {
-    Accesorios: "/src/assets/images/categoria_accesorios.jpg",
-    perros: "/src/assets/images/categoria_perros.jpg",
-    gatos: "/src/assets/images/categoria_gato.jpg",
-    "Otros animalitos": "/src/assets/images/categoria_higiene.jpg",
-    Comida: "/src/assets/images/categoria_comida.jpg",
+    Accesorios: categoria_accesorios,
+    perros: categorias_perros,
+    gatos: categorias_gatos,
+    "Otros animalitos": categoria_otros,
+    Comida: categoria_comida,
   }
 
   useEffect(() => {
