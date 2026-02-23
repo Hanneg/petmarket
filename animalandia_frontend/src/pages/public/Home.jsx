@@ -16,11 +16,11 @@ export default function Home() {
   const [featured, setFeatured] = useState([]);
 
   const categoryImages = {
-    Accesorios: {categoria_accesorios},
-    perros: {categorias_perros},
-    gatos: {categorias_gatos},
-    "Otros animalitos": {categoria_otros},
-    Comida: {categoria_comida},
+    Accesorios: categoria_accesorios,
+    Perros: categorias_perros,
+    Gatos: categorias_gatos,
+    "Otros animalitos": categoria_otros,
+    Comida: categoria_comida,
   }
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function Home() {
 
       const withImages = data.map((cat) => ({
         ...cat,
-        image: categoryImages[cat.name] || "/src/assets/images/default.jpg",
+        image: categoryImages[cat.name] || categoria_accesorios,
       }));
 
       setCategories(withImages);
