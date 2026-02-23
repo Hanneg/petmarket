@@ -23,7 +23,7 @@ export default function EditPublication() {
   useEffect(() => {
     const fetchPublication = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/seller/publications/${id}`,
+        const res = await fetch(`${import.meta.env.VITE_API_URL}api/seller/publications/${id}`,
           {
             headers: {
               Authorization: `Bearer ${user.token}`,
@@ -60,7 +60,7 @@ export default function EditPublication() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/categories`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}api/categories`);
         const data = await res.json();
 
         if (!res.ok) {
@@ -89,7 +89,7 @@ export default function EditPublication() {
     e.preventDefault();
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/seller/publications/${id}`,
+      const res = await fetch(`${import.meta.env.VITE_API_URL}api/seller/publications/${id}`,
         {
           method: "PUT",
           headers: {
