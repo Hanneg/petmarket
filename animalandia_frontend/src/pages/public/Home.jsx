@@ -20,7 +20,7 @@ export default function Home() {
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}api/categories`);
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/categories`);
       const data = await res.json();
 
       const withImages = data.map((cat) => ({
@@ -36,7 +36,7 @@ export default function Home() {
 
   useEffect(() => {
     const fetchFeatured = async () => {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}api/products`);
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/products`);
       const data = await res.json();
      setFeatured(data.slice(0, 8));
     };
