@@ -85,7 +85,7 @@ export default function MyPublications() {
                   <tr key={product.id}>
                     <td>
                       <img
-                        src={product.image}
+                        src={product.image_url}
                         alt={product.name}
                         style={{ width: 60, borderRadius: "6px" }}
                       />
